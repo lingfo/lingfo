@@ -2,3 +2,4 @@ lib/*
 sushi.conf
 example.py
 out/*
+*/__pycache__/*
