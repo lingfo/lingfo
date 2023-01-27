@@ -1,0 +1,4 @@
+lib/*
+sushi.conf
+example.py
+out/*
