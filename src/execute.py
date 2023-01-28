@@ -38,6 +38,7 @@ class Execute:
             "$SUSHI_NEWLINE": "\n",
         }
 
+        global TEMP_FILE
         for i, j in translate_data.items():
             TEMP_FILE = TEMP_FILE.replace(i, j)
 
@@ -49,7 +50,7 @@ class Execute:
         file_name = main_config["lib_path"].split("/")[1]
 
         global TEMP_FILE
-        TEMP_FILE = config["TEMP_file"]["TEMP_file"]
+        TEMP_FILE = config["temp_file"]["temp_file"]
 
         data = TranslateData(import_syntax, file_name, call_function)
         self.translate(data)
@@ -61,11 +62,10 @@ class Execute:
 
         # create temporary file
         path = main_config["lib_path"].split("/")[0]
-        launch_extension = launch_config["extension"]
         temp_extension = config["temp_file"]["extension"]
 
         with open(
-            file=f"{path}/temp.{launch_extension}", mode="w", encoding="UTF-8"
+            file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
         ) as f:
             f.write(TEMP_FILE)
         f.close()
