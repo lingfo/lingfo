@@ -15,7 +15,7 @@ class Cache:
     def _exists(self) -> bool:
         return path.isfile("sushicache.py")
 
-    def update(old: str, new: str):
+    def update(self, old: str, new: str):
         """
         overwrites old cache data with new one
         """
