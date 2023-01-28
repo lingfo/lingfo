@@ -5,7 +5,13 @@ indexes all files
 import configparser
 import re
 from os import mkdir
-from os.path import exists
+from os.path import exists, isfile
+
+from src.cache.main import Cache
+
+if isfile("sushicache.py"):
+    import sushicache
+
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -32,6 +38,14 @@ def find():
             if f_pattern.match(x):
                 DATA.append({"type": extract[0], "name": extract[1].split("(")[0]})
         f.close()
+
+    # save indexed functions to cache so we dont have to re-index every launch
+
+    Cache.update(
+        Cache,
+        f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
+        f"INDEXED_FUNCTIONS = {DATA}",
+    )
     save()
 
 
