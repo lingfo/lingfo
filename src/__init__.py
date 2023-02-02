@@ -19,4 +19,5 @@ if not path.isfile("sushi.conf"):
 
 # check if configs needs to be extended
 if config["extends"]["repo"] is not None:
-    ConfigExtends.install(ConfigExtends)
+    obj = ConfigExtends()
+    obj.install()

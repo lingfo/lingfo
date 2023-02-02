@@ -27,6 +27,7 @@ class ConfigExtends:
     """extends config from another config"""
 
     def _parse_repo(
+        self,
         repo: str,
     ) -> dict[str, str]:  # pylint disable=unsubscriptable-object
         """parse repo config
@@ -41,7 +42,7 @@ class ConfigExtends:
         split: str = newrepo.split("/")
         return {"user": split[0], "name": split[1]}
 
-    def _get_repo(data: str, filename: str):
+    def _get_repo(self, data: str, filename: str):
         repourl = f"https://github.com/{data.get('user')}/{data.get('name')}"
 
         rich_print("[bold yellow]sushi[/bold yellow]   cloning repository")
