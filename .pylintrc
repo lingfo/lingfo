@@ -1,2 +1,5 @@
 [FORMAT]
 good-names=i,j,k,ex,Run,pk,x,y,f
+
+[MESSAGES CONTROL]
+disable=unsubscriptable-object
