@@ -4,6 +4,7 @@ import configparser
 import os
 import platform
 import tempfile
+from os.path import isfile
 from pathlib import Path
 from shutil import rmtree
 
@@ -13,7 +14,10 @@ from rich import print as rich_print
 # pylint: disable=import-error, too-few-public-methods
 from src.cache.main import Cache
 
+if isfile("sushicache.py"):
+    import sushicache
 # pylint: enable=import-error
+
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -67,3 +71,20 @@ class ConfigExtends:
 
         data = self._parse_repo(repo)
         self._get_repo(data, filename)
+
+
+class MergeConfig:
+    """copies extended config and adds it to sushi.conf"""
+
+    def _get_config(self):
+        with open("sushi.conf", encoding="UTF-8") as f:
+            data = f.read()
+            return data
+
+    def __init__(self) -> None:
+        # get extended config and sushi.conf config
+        ext_config = sushicache.EXTENDS_CONFIG
+        original_config = self._get_config()
+
+        # add 2 configs together
+        original_config += ext_config
