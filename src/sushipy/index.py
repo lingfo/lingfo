@@ -60,7 +60,7 @@ def save():
 
     # create new file
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from src.sushipy.execute import Execute\n")
+        f.write("from sushipy.execute import Execute\n")
 
         for x in DATA:
             fname = x["name"]
