@@ -8,7 +8,7 @@ from os import path
 
 from rich import print as rich_print
 
-from src.config import extends
+from src.sushipy.config import extends
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")

@@ -8,7 +8,7 @@ import re
 from os import mkdir
 from os.path import exists, isfile
 
-from src.cache.main import Cache
+from src.sushipy.cache.main import Cache
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -60,7 +60,7 @@ def save():
 
     # create new file
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from src.execute import Execute\n")
+        f.write("from src.sushipy.execute import Execute\n")
 
         for x in DATA:
             fname = x["name"]

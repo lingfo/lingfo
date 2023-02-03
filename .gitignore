@@ -2,7 +2,10 @@ lib/*
 sushi.conf
 example.py
 out/*
-*/__pycache__/*
 */*/__pycache__/*
+*/*/*/__pycache__/*
 sushicache.py
+*/__pycache__/*
 __pycache__/*
+src/sushipy.egg-info/*
+dist/*
