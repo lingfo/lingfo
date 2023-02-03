@@ -9,5 +9,8 @@
 <h2> how it works? </h2>
 <p>Instead of translating code from one language to another, sushi compiles or interprets code creating an executable file or a runnable version of the code so it can be executed and outputed to terminal making it as fast like it would normally be.</p>
 
+<h2> wiki </h2>
+<p> wiki is currently hosted <a href="https://github.com/dev-sushi/sushi/wiki"/> here </a> </p>
+
 <h2> license </h2>
 <p> MIT </p>
