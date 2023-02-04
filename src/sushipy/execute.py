@@ -7,7 +7,7 @@ executes functions from another language
 import configparser
 import inspect
 from dataclasses import dataclass
-from os import system
+from os import remove, system
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -75,5 +75,8 @@ class Execute:
                 "[file-name]", f"lib/temp.{temp_extension}"
             )
         )
+
+        # remove temp file
+        remove(f'lib/temp.{temp_extension}')
 
         system("./lib/out")
