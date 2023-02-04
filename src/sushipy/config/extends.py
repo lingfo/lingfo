@@ -55,6 +55,20 @@ class ConfigExtends:
         repo = Repo.clone_from(repourl, f"{tempdir}/sushi/")
         repo.git.checkout("main")
 
+        # show what command will be executed from extended config
+        temp_config = configparser.ConfigParser()
+        temp_config.read(f"{tempdir}/sushi/{filename}")
+        exec_command = temp_config["launch"]["exec_command"]
+
+        rich_print(
+            f"[bold red]sushi[/bold red]   Extended config will run following command on function execute: {exec_command}. Continue? (Y/N)"
+        )
+
+        q = input()
+
+        if q.upper() == "N":
+            exit(0)
+
         # add new config to cache
         with open(f"{tempdir}/sushi/{filename}", "r", encoding="UTF-8") as f:
             Cache.update(
