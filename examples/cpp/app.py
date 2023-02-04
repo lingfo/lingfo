@@ -1,3 +1,5 @@
+# pylint: disable=missing-module-docstring
+
 # from out.main import helloWorld
 from sushipy.main import Sushi
 
