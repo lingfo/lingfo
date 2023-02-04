@@ -3,6 +3,7 @@
 import configparser
 import os
 import platform
+import sys
 import tempfile
 from os.path import isfile
 from pathlib import Path
@@ -60,14 +61,15 @@ class ConfigExtends:
         temp_config.read(f"{tempdir}/sushi/{filename}")
         exec_command = temp_config["launch"]["exec_command"]
 
+        # pylint: disable=line-too-long
         rich_print(
-            f"[bold red]sushi[/bold red]   Extended config will run following command on function execute: {exec_command}. Continue? (Y/N)"
+            f"[bold red]sushi[/bold red]   Extended config will run following command on function execute: {exec_command}"
         )
+        # pylint: enable=line-too-long
 
-        q = input()
-
-        if q.upper() == "N":
-            exit(0)
+        input_data = input()
+        if input_data.upper() == "N":
+            sys.exit(0)
 
         # add new config to cache
         with open(f"{tempdir}/sushi/{filename}", "r", encoding="UTF-8") as f:
