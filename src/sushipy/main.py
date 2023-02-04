@@ -9,6 +9,7 @@ from os import path
 from rich import print as rich_print
 
 from src.sushipy.config import extends
+from src.sushipy.index import find
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -38,3 +39,5 @@ class Sushi:
         functions = [self._check_config, self._extend_check]
         for f in functions:
             f()
+
+        find()
