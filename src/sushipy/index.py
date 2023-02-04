@@ -8,6 +8,8 @@ import re
 from os import mkdir
 from os.path import exists, isfile
 
+from rich import print as rich_print
+
 from src.sushipy.cache.main import Cache
 
 # pylint: disable=import-error
@@ -24,6 +26,7 @@ DATA = []
 
 def find():
     """finds all functions by using regex from sushi.conf"""
+    old_cache = sushicache.INDEXED_FUNCTIONS
 
     function_pattern = config["index"]["function_pattern"]
 
@@ -43,18 +46,20 @@ def find():
         f.close()
 
     # save indexed functions to cache so we dont have to re-index every launch
-
     Cache.update(
         Cache,
         f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
         f"INDEXED_FUNCTIONS = {DATA}",
     )
-    save()
+
+    if old_cache != DATA:
+        save()
 
 
 def save():
     """saves indexed functions to file"""
 
+    rich_print("[bold yellow]sushi[/bold yellow]   saving indexed functions")
     if not exists("out"):
         mkdir("out")
 
