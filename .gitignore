@@ -9,3 +9,4 @@ sushicache.py
 __pycache__/*
 src/sushipy.egg-info/*
 dist/*
+.vscode/*

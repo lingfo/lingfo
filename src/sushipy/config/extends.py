@@ -13,7 +13,7 @@ from git import Repo
 from rich import print as rich_print
 
 # pylint: disable=import-error, too-few-public-methods
-from src.sushipy.cache.main import Cache
+from ..cache.main import Cache
 
 if isfile("sushicache.py"):
     import sushicache

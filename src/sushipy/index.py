@@ -10,7 +10,7 @@ from os.path import exists, isfile
 
 from rich import print as rich_print
 
-from src.sushipy.cache.main import Cache
+from .cache.main import Cache
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -65,7 +65,7 @@ def save():
 
     # create new file
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from sushipy.execute import Execute\n")
+        f.write("from execute import Execute\n")
 
         for x in DATA:
             fname = x["name"]
