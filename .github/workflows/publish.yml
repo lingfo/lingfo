@@ -3,7 +3,8 @@ name: Publish to PyPi
 on: [push]
 
 jobs:
-    build:
+    release:
+        if: github.repository == 'dev-sushi/sushi'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
