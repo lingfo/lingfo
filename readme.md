@@ -1,5 +1,10 @@
 <p align='center'>
     <img src="https://user-images.githubusercontent.com/47505116/215187622-ea13d72c-178d-48bb-aba4-1398abf3347d.png" alt="sushi logo">
+    
+<br/>
+<br/>
+<img src="https://img.shields.io/pypi/dm/sushipy.svg" alt="badge"/>
+
 </p>
 
 ---
