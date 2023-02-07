@@ -3,6 +3,7 @@
 import configparser
 import os
 import platform
+import pydoc
 import sys
 import tempfile
 from os.path import isfile
@@ -47,6 +48,23 @@ class ConfigExtends:
         split: str = newrepo.split("/")
         return {"user": split[0], "name": split[1]}
 
+    def _review_config(self, filename: str):
+        rich_print("[bold red]sushi[/bold red]   review configuration!")
+
+        with open(f"{tempdir}/sushi/{filename}", "r", encoding="UTF-8") as f:
+            content = f.read()
+        pydoc.pager(content)
+
+        rich_print(
+            "[bold red]sushi[/bold red]   Press C to cancel, otherwise press any other key."
+        )
+
+        out = input()
+
+        if out.upper() == "C":
+            rmtree(f"{tempdir}/sushi/")
+            sys.exit(0)
+
     def _get_repo(self, data: str, filename: str):
         repourl = f"https://github.com/{data.get('user')}/{data.get('name')}"
 
@@ -59,17 +77,8 @@ class ConfigExtends:
         # show what command will be executed from extended config
         temp_config = configparser.ConfigParser()
         temp_config.read(f"{tempdir}/sushi/{filename}")
-        exec_command = temp_config["launch"]["exec_command"]
 
-        # pylint: disable=line-too-long
-        rich_print(
-            f"[bold red]sushi[/bold red]   Extended config will run following command on function execute: {exec_command}"
-        )
-        # pylint: enable=line-too-long
-
-        input_data = input()
-        if input_data.upper() == "N":
-            sys.exit(0)
+        self._review_config(filename)
 
         # add new config to cache
         with open(f"{tempdir}/sushi/{filename}", "r", encoding="UTF-8") as f:

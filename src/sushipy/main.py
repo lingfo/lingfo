@@ -5,6 +5,7 @@ sushi
 import configparser
 import sys
 from os import path
+from os.path import isfile
 
 from rich import print as rich_print
 
@@ -13,6 +14,11 @@ from .index import find
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
+
+# pylint: disable=import-error
+if isfile("sushicache.py"):
+    import sushicache
+# pylint: enable=import-error
 
 
 class Sushi:
@@ -31,8 +37,10 @@ class Sushi:
         except KeyError:
             pass
         else:
-            obj = extends.ConfigExtends()
-            obj.install()
+            # skip extend config if it was already extended
+            if sushicache.EXTENDS_CONFIG is None:
+                obj = extends.ConfigExtends()
+                obj.install()
 
     def __init__(self) -> None:
         # cleaner way to run multiple functions
