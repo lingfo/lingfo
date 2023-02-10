@@ -5,12 +5,14 @@ indexes all files
 
 import configparser
 import re
+from contextlib import suppress
 from os import mkdir
 from os.path import exists, isfile
 
 from rich import print as rich_print
 
 from .cache.main import Cache
+from .utils.find_dict import find as find_dict
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -40,16 +42,21 @@ def find():
             extract = x.split()
 
             if f_pattern.match(x):
+                # append to data
+                name = extract[1].split("(")[0]
                 DATA.append(
                     {
                         "type": extract[0],
-                        "name": extract[1].split("(")[0],
+                        "name": name,
                         "all": extract,
                     }
                 )
-        f.close()
 
-    get_arg()
+                # get arguments from functions and save it
+                arg_data = get_arg(name)
+                DATA.append(DATA[0] | {"arg": arg_data})
+
+        f.close()
 
     # save indexed functions to cache so we dont have to re-index every launch
     Cache.update(
@@ -73,22 +80,25 @@ def save():
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
         f.write("from sushipy.execute import Execute\n")
 
+        print(DATA)
         for x in DATA:
             fname = x["name"]
             f.write(f"def {fname}():\tExecute()\n")
     f.close()
 
 
-def get_arg():
+def get_arg(name: str):
     """gets all arguments from function"""
 
     args = []
+    find_data = find_dict(name, DATA, "name")
 
-    for x in DATA:
-        extract_data = x.get("all")
-        split_args = extract_data[1].split("(")[1]
+    extract_data = find_data.get("all")
+
+    with suppress(IndexError):
+        split_args = extract_data[2]
 
         if split_args != ")":
-            args.append({"name": "", "args": split_args})
+            args.append(split_args.replace(")", ""))
 
-    # print(args)
+        return args
