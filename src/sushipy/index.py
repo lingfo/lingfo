@@ -26,8 +26,6 @@ DATA = []
 
 def find():
     """finds all functions by using regex from sushi.conf"""
-    old_cache = sushicache.INDEXED_FUNCTIONS
-
     function_pattern = config["index"]["function_pattern"]
 
     files = config["main"]["lib_path"]
@@ -42,8 +40,16 @@ def find():
             extract = x.split()
 
             if f_pattern.match(x):
-                DATA.append({"type": extract[0], "name": extract[1].split("(")[0]})
+                DATA.append(
+                    {
+                        "type": extract[0],
+                        "name": extract[1].split("(")[0],
+                        "all": extract,
+                    }
+                )
         f.close()
+
+    get_arg()
 
     # save indexed functions to cache so we dont have to re-index every launch
     Cache.update(
@@ -52,8 +58,8 @@ def find():
         f"INDEXED_FUNCTIONS = {DATA}",
     )
 
-    if old_cache != DATA:
-        save()
+    # if old_cache != DATA:
+    save()
 
 
 def save():
@@ -65,9 +71,24 @@ def save():
 
     # create new file
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from execute import Execute\n")
+        f.write("from sushipy.execute import Execute\n")
 
         for x in DATA:
             fname = x["name"]
             f.write(f"def {fname}():\tExecute()\n")
     f.close()
+
+
+def get_arg():
+    """gets all arguments from function"""
+
+    args = []
+
+    for x in DATA:
+        extract_data = x.get("all")
+        split_args = extract_data[1].split("(")[1]
+
+        if split_args != ")":
+            args.append({"name": "", "args": split_args})
+
+    # print(args)

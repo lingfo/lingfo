@@ -77,6 +77,5 @@ class Execute:
         )
 
         # remove temp file
-        remove(f'lib/temp.{temp_extension}')
-
+        remove(f"lib/temp.{temp_extension}")
         system("./lib/out")
