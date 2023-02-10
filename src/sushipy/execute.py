@@ -6,6 +6,7 @@ executes functions from another language
 
 import configparser
 import inspect
+import re
 from dataclasses import dataclass
 from os import remove, system
 
@@ -16,6 +17,7 @@ main_config = config["main"]
 launch_config = config["launch"]
 
 TEMP_FILE = ""
+INIT_ARGS = ()
 
 
 @dataclass
@@ -26,7 +28,7 @@ class TranslateData:
 
 
 class Execute:
-    """executes"""
+    """executes function"""
 
     def translate(self, data: TranslateData):
         """translates string (multiple replace)"""
@@ -34,6 +36,7 @@ class Execute:
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
+            "$SUSHI_ARGS": INIT_ARGS,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
         }
@@ -42,9 +45,13 @@ class Execute:
         for i, j in translate_data.items():
             TEMP_FILE = TEMP_FILE.replace(i, j)
 
-    def __init__(self) -> None:
+    def __init__(self, *args) -> None:
+        global INIT_ARGS
+
         # get from what function was this called
         call_function = inspect.stack()[1].function
+
+        INIT_ARGS = re.sub("[()]", "", rf"{args}".replace(",", ""))
 
         import_syntax = launch_config["import_syntax"]
         file_name = main_config["lib_path"].split("/")[1]
@@ -77,6 +84,5 @@ class Execute:
         )
 
         # remove temp file
-        remove(f'lib/temp.{temp_extension}')
-
+        remove(f"lib/temp.{temp_extension}")
         system("./lib/out")
