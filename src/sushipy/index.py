@@ -53,8 +53,11 @@ def find():
                 )
 
                 # get arguments from functions and save it
+
+                # pylint: disable=unsupported-binary-operation
                 arg_data = get_arg(name)
                 DATA.append(DATA[0] | {"arg": arg_data})
+                # pylint: enable=unsupported-binary-operation
 
         f.close()
 
@@ -80,10 +83,15 @@ def save():
     with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
         f.write("from sushipy.execute import Execute\n")
 
-        print(DATA)
         for x in DATA:
             fname = x["name"]
-            f.write(f"def {fname}():\tExecute()\n")
+
+            # todo: cleanup
+            args = ""
+            if x.get("arg") is not None:
+                args = x.get("arg")[0]
+
+            f.write(f"def {fname}({args}):\tExecute()\n")
     f.close()
 
 
