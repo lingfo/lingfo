@@ -57,6 +57,7 @@ def find():
                 # pylint: disable=unsupported-binary-operation
                 arg_data = get_arg(name)
                 DATA.append(DATA[0] | {"arg": arg_data})
+
                 # pylint: enable=unsupported-binary-operation
 
         f.close()
@@ -91,7 +92,12 @@ def save():
             if x.get("arg") is not None:
                 args = x.get("arg")[0]
 
+                if len(x.get("arg")) > 1:
+                    args = rf'{x.get("arg")}'[1:-1].replace("'", "")
+                    args = args.replace(",,", ",")
+
             f.write(f"def {fname}({args}):\tExecute()\n")
+
     f.close()
 
 
@@ -106,7 +112,31 @@ def get_arg(name: str):
     with suppress(IndexError):
         split_args = extract_data[2]
 
-        if split_args != ")":
+        if split_args[-1] == ",":
+            # there are more arguments than 1
+
+            i = 2
+            multiple_args = []
+
+            while True:
+                try:
+                    multiple_args.append(extract_data[i])
+
+                    i += (
+                        2
+                        if config.getboolean("index", "variables_contains_types")
+                        else 1
+                    )
+
+                except IndexError:
+                    # remove )
+                    last_item = multiple_args[-1]
+                    multiple_args.pop()
+                    multiple_args.append(last_item.replace(")", ""))
+
+                    return multiple_args
+
+        elif split_args != ")":
             args.append(split_args.replace(")", ""))
 
         return args
