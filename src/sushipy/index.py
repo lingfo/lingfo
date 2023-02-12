@@ -44,25 +44,22 @@ def find():
             if f_pattern.match(x):
                 # append to data
                 name = extract[1].split("(")[0]
-                DATA.append(
-                    {
-                        "type": extract[0],
-                        "name": name,
-                        "all": extract,
-                    }
-                )
+                data = {
+                    "type": extract[0],
+                    "name": name,
+                    "all": extract,
+                }
 
                 # get arguments from functions and save it
 
                 # pylint: disable=unsupported-binary-operation
-                arg_data = get_arg(name)
-                DATA.append(DATA[0] | {"arg": arg_data})
-
+                arg_data = get_arg(name, data)
+                DATA.append(data | {"arg": arg_data})
                 # pylint: enable=unsupported-binary-operation
 
         f.close()
 
-    # save indexed functions to cache so we dont have to re-index every launch
+    # save indexed functions  to cache so we dont have to re-index every launch
     Cache.update(
         Cache,
         f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
@@ -85,6 +82,7 @@ def save():
         f.write("from sushipy.execute import Execute\n")
 
         for x in DATA:
+            # print(x)
             fname = x["name"]
 
             # todo: cleanup
@@ -101,11 +99,11 @@ def save():
     f.close()
 
 
-def get_arg(name: str):
+def get_arg(name: str, data: any):
     """gets all arguments from function"""
 
     args = []
-    find_data = find_dict(name, DATA, "name")
+    find_data = find_dict(name, [data], "name")
 
     extract_data = find_data.get("all")
 
