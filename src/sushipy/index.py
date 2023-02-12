@@ -96,7 +96,7 @@ def save():
                     args = rf'{x.get("arg")}'[1:-1].replace("'", "")
                     args = args.replace(",,", ",")
 
-            f.write(f"def {fname}({args}):\tExecute()\n")
+            f.write(f"def {fname}({args}):\tExecute({args})\n")
 
     f.close()
 
