@@ -9,6 +9,15 @@ import inspect
 import re
 from dataclasses import dataclass
 from os import remove, system
+from os.path import isfile
+
+from .cache.main import Cache
+
+# pylint: disable=import-error
+if isfile("sushicache.py"):
+    import sushicache
+# pylint: enable=import-error
+
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -66,6 +75,10 @@ class Execute:
     def function(self):
         """runs function from another language"""
 
+        if sushicache.LAST_EXECUTED_CODE == TEMP_FILE:
+            system("./lib/out")
+            return
+
         # create temporary file
         path = main_config["lib_path"].split("/")[0]
         temp_extension = config["temp_file"]["extension"]
@@ -82,6 +95,14 @@ class Execute:
             )
         )
 
+        Cache.update(
+            Cache,
+            f"LAST_EXECUTED_CODE = {sushicache.LAST_EXECUTED_CODE}",
+            f'LAST_EXECUTED_CODE = """{TEMP_FILE}"""',
+        )
+
         # remove temp file
         remove(f"lib/temp.{temp_extension}")
         system("./lib/out")
+
+        return

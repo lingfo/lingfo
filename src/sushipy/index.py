@@ -59,7 +59,7 @@ def find():
 
         f.close()
 
-    # save indexed functions  to cache so we dont have to re-index every launch
+    # save indexed functions to cache so we dont have to re-index every launch
     Cache.update(
         Cache,
         f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
