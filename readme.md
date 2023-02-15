@@ -11,7 +11,8 @@
 ---
 
 # Sushi
-Sushi is a library that allows you to run functions from other languages without needing to translate the code
+Sushi is a library that allows you to run functions from other languages without needing to translate the code.
+
 
 ## How it works
 Sushi compiles or interprets the code to create an runnable file which then can be executed, displaying the output in the terminal. Removing the translation step allows for code to run at its native language speed.
