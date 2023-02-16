@@ -9,6 +9,7 @@ from os.path import isfile
 
 from rich import print as rich_print
 
+from .cache.main import Cache
 from .config import extends
 from .index import find
 
@@ -44,7 +45,7 @@ class Sushi:
 
     def __init__(self) -> None:
         # cleaner way to run multiple functions
-        functions = [self._check_config, self._extend_check]
+        functions = [self._check_config, self._extend_check, Cache]
         for f in functions:
             f()
 

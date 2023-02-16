@@ -26,7 +26,7 @@ class Cache:
                 print(new_line, end="")
 
     def _copy_template(self) -> None:
-        copyfile("src/cache/cache_template", "sushicache.py")
+        copyfile("src/sushipy/cache/cache_template", "sushicache.py")
 
     def __init__(self) -> None:
         # if cache doesnt exists, create one

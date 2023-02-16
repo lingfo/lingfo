@@ -19,8 +19,6 @@ if isfile("sushicache.py"):
     import sushicache
 # pylint: enable=import-error
 
-from contextlib import suppress
-
 config = configparser.ConfigParser()
 config.read("sushi.conf")
 
