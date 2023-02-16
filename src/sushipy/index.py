@@ -19,6 +19,7 @@ if isfile("sushicache.py"):
     import sushicache
 # pylint: enable=import-error
 
+from contextlib import suppress
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -60,11 +61,13 @@ def find():
         f.close()
 
     # save indexed functions to cache so we dont have to re-index every launch
-    Cache.update(
-        Cache,
-        f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
-        f"INDEXED_FUNCTIONS = {DATA}",
-    )
+
+    with suppress(NameError):
+        Cache.update(
+            Cache,
+            f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
+            f"INDEXED_FUNCTIONS = {DATA}",
+        )
 
     # if old_cache != DATA:
     save()
