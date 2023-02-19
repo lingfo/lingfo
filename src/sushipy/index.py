@@ -70,6 +70,7 @@ def find():
     # if old_cache != DATA:
     save()
 
+    return DATA
 
 def save():
     """saves indexed functions to file"""
