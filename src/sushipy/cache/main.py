@@ -5,8 +5,11 @@ cache
 # pylint: disable=no-method-argument, too-few-public-methods
 
 import fileinput
-from os import path
+import importlib
+from os import name, path
 from shutil import copyfile
+
+DIR_SLASH = "\\" if name == "nt" else "/"
 
 
 class Cache:
@@ -26,7 +29,12 @@ class Cache:
                 print(new_line, end="")
 
     def _copy_template(self) -> None:
-        copyfile("src/sushipy/cache/cache_template", "sushicache.py")
+        lib_path = importlib.util.find_spec("sushipy").origin
+        lib_path = lib_path.replace(
+            "__init__.py", f"{DIR_SLASH}cache{DIR_SLASH}cache_template.py"
+        )
+
+        copyfile(lib_path, "sushicache.py")
 
     def __init__(self) -> None:
         # if cache doesnt exists, create one
