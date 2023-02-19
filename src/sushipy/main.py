@@ -4,7 +4,7 @@ sushi
 
 import configparser
 import sys
-from os import chdir, getcwd, path
+from os import path
 from os.path import isfile
 
 from rich import print as rich_print
@@ -18,7 +18,6 @@ config.read("sushi.conf")
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
-    chdir(getcwd())
     import sushicache
 # pylint: enable=import-error
 

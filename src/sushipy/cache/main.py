@@ -5,7 +5,7 @@ cache
 # pylint: disable=no-method-argument, too-few-public-methods
 
 import fileinput
-from os import chdir, getcwd, path
+from os import path
 from shutil import copyfile
 
 
@@ -29,8 +29,6 @@ class Cache:
         copyfile("src/sushipy/cache/cache_template", "sushicache.py")
 
     def __init__(self) -> None:
-        chdir(getcwd())
-
         # if cache doesnt exists, create one
         if not self._exists():
             self._copy_template()

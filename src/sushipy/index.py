@@ -6,7 +6,7 @@ indexes all files
 import configparser
 import re
 from contextlib import suppress
-from os import chdir, getcwd, mkdir
+from os import mkdir
 from os.path import exists, isfile
 
 from rich import print as rich_print
@@ -16,7 +16,6 @@ from .utils.find_dict import find as find_dict
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
-    chdir(getcwd())
     import sushicache
 # pylint: enable=import-error
 

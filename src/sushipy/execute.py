@@ -8,14 +8,13 @@ import configparser
 import inspect
 import re
 from dataclasses import dataclass
-from os import chdir, getcwd, remove, system
+from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
-    chdir(getcwd())
     import sushicache
 # pylint: enable=import-error
 
