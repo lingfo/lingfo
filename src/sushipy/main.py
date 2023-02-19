@@ -4,7 +4,7 @@ sushi
 
 import configparser
 import sys
-from os import path
+from os import chdir, getcwd, path
 from os.path import isfile
 
 from rich import print as rich_print
@@ -44,6 +44,8 @@ class Sushi:
                 obj.install()
 
     def __init__(self) -> None:
+        chdir(getcwd())
+
         # cleaner way to run multiple functions
         functions = [self._check_config, self._extend_check, Cache]
         for f in functions:
