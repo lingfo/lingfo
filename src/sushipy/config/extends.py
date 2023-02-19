@@ -6,6 +6,7 @@ import platform
 import pydoc
 import sys
 import tempfile
+from os import chdir, getcwd
 from os.path import isfile
 from pathlib import Path
 from shutil import rmtree
@@ -17,6 +18,7 @@ from rich import print as rich_print
 from ..cache.main import Cache
 
 if isfile("sushicache.py"):
+    chdir(getcwd())
     import sushicache
 # pylint: enable=import-error
 
