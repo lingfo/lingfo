@@ -10,11 +10,10 @@
 
 ---
 
-# Sushi
 Sushi is a library that allows you to run functions from other languages without needing to translate the code.
 
-
 ## How it works
+
 Sushi compiles or interprets the code to create a runnable file which then can be executed, displaying the output in the terminal. Removing the translation step allows for code to run at its native language speed.
 
 ## Contributing
@@ -29,7 +28,9 @@ If you would like to contribute, here is a common recommended method:
 6. Submit a pull request (be sure to include a good description of your changes!)
 
 ## Wiki
+
 The wiki is currently hosted [here](https://github.com/dev-sushi/sushi/wiki).
 
 ## License
-Sushi is licensed under the MIT license. 
+
+Sushi is licensed under the MIT license.
