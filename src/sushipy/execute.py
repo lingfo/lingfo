@@ -7,6 +7,7 @@ executes functions from another language
 import configparser
 import inspect
 import re
+import subprocess
 from dataclasses import dataclass
 from os import remove, system
 from os.path import isfile
@@ -89,10 +90,13 @@ class Execute:
             f.write(TEMP_FILE)
         f.close()
 
-        system(
-            launch_config["exec_command"].replace(
-                "[file-name]", f"lib/temp.{temp_extension}"
-            )
+        subprocess.call(
+            [
+                launch_config["exec_command"].replace(
+                    "[file-name]", f"lib/temp.{temp_extension}"
+                )
+            ],
+            shell=False,
         )
 
         Cache.update(
@@ -103,6 +107,6 @@ class Execute:
 
         # remove temp file
         remove(f"lib/temp.{temp_extension}")
-        system("./lib/out")
+        subprocess.call(["./lib/out"], shell=False)
 
         return
