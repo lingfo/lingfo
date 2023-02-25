@@ -1,5 +1,5 @@
 lib/*
-sushi.conf
+/sushi.conf
 example.py
 out/*
 */*/__pycache__/*
