@@ -33,7 +33,7 @@ class TestExecute:
         os.chdir("noarg-temp/")
 
         result = subprocess.run(
-            ["python3.9", "app.py"], capture_output=True, text=True, check=False
+            ["python", "app.py"], capture_output=True, text=True, check=False
         )
         result = result.stdout.split("\n")
 
