@@ -6,12 +6,13 @@ indexes all files
 import configparser
 import re
 from contextlib import suppress
-from os import mkdir
+from os import listdir, mkdir, path
 from os.path import exists, isfile
 
 from rich import print as rich_print
 
 from .cache.main import Cache
+from .stores import MULTIPLE_FILES
 from .utils.find_dict import find as find_dict
 
 # pylint: disable=import-error
@@ -25,14 +26,14 @@ config.read("sushi.conf")
 DATA = []
 
 
-def find():
+def _open_find(
+    file,
+    function_pattern,
+):
     """finds all functions by using regex from sushi.conf"""
-    function_pattern = config["index"]["function_pattern"]
-
-    files = config["main"]["lib_path"]
 
     # first, open file
-    with open(file=files, mode="r", encoding="UTF-8") as f:
+    with open(file=file, mode="r", encoding="UTF-8") as f:
         lines = f.read().split("\n")
 
         # now, loop through all lines to see if there are any functions
@@ -58,6 +59,25 @@ def find():
 
         f.close()
 
+
+def find():
+    """finds functions"""
+
+    function_pattern = config["index"]["function_pattern"]
+    files = config["main"]["lib_path"]
+
+    if MULTIPLE_FILES:
+        # get all files
+        lib_path = path.abspath(files.replace("*", ""))
+
+        all_files = listdir(lib_path)
+        all_files.remove("out")
+
+        for x in all_files:
+            _open_find(lib_path + "/" + x, function_pattern)
+    else:
+        _open_find(all_files, function_pattern)
+
     # save indexed functions to cache so we dont have to re-index every launch
 
     with suppress(NameError):
@@ -71,6 +91,7 @@ def find():
     save()
 
     return DATA
+
 
 def save():
     """saves indexed functions to file"""
