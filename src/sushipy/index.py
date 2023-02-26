@@ -44,11 +44,7 @@ def _open_find(
             if f_pattern.match(x):
                 # append to data
                 name = extract[1].split("(")[0]
-                data = {
-                    "type": extract[0],
-                    "name": name,
-                    "all": extract,
-                }
+                data = {"type": extract[0], "name": name, "all": extract, "file": file}
 
                 # get arguments from functions and save it
 
@@ -79,7 +75,6 @@ def find():
         _open_find(all_files, function_pattern)
 
     # save indexed functions to cache so we dont have to re-index every launch
-
     with suppress(NameError):
         Cache.update(
             Cache,
