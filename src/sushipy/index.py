@@ -60,7 +60,6 @@ def find():
     """finds functions"""
 
     function_pattern = config["index"]["function_pattern"]
-    files = config["main"]["lib_path"]
 
     if MULTIPLE_FILES:
         # get all files
@@ -72,7 +71,8 @@ def find():
         for x in all_files:
             _open_find(lib_path + "/" + x, function_pattern)
     else:
-        _open_find(all_files, function_pattern)
+        files = config["main"]["lib_path"]
+        _open_find(files, function_pattern)
 
     # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
