@@ -64,7 +64,7 @@ def find():
 
     if MULTIPLE_FILES:
         # get all files
-        lib_path = path.abspath(files.replace("*", ""))
+        lib_path = path.relpath(files.replace("*", ""))
 
         all_files = listdir(lib_path)
         all_files.remove("out")
@@ -91,15 +91,20 @@ def find():
 def save():
     """saves indexed functions to file"""
 
-    rich_print("[bold yellow]sushi[/bold yellow]   saving indexed functions")
     if not exists("out"):
         mkdir("out")
 
     # create new file
-    with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from sushipy.execute import Execute\n")
+    for x in DATA:
+        rich_print(
+            f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')})"
+        )
 
-        for x in DATA:
+        file_data = x.get("file").split("/")[-1]
+
+        with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
+            f.write("from sushipy.execute import Execute\n")
+
             # print(x)
             fname = x["name"]
 
@@ -114,7 +119,7 @@ def save():
 
             f.write(f"def {fname}({args}):\tExecute({args})\n")
 
-    f.close()
+        f.close()
 
 
 def get_arg(name: str, data: any):
