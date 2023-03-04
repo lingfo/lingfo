@@ -100,7 +100,8 @@ def save():
             f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')})"
         )
 
-        file_data = x.get("file").split("/")[-1]
+        file_data_old = x.get("file").split("/")[-1]
+        file_data = file_data_old.replace("." + config["main"]["lang"], "")
 
         with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
             f.write("from sushipy.execute import Execute\n")
@@ -117,7 +118,7 @@ def save():
                     args = rf'{x.get("arg")}'[1:-1].replace("'", "")
                     args = args.replace(",,", ",")
 
-            f.write(f"def {fname}({args}):\tExecute({args})\n")
+            f.write(f"def {fname}({args}):\tExecute(file='{file_data_old}', {args})\n")
 
         f.close()
 
