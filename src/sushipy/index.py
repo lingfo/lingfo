@@ -6,12 +6,13 @@ indexes all files
 import configparser
 import re
 from contextlib import suppress
-from os import mkdir
+from os import listdir, mkdir, path
 from os.path import exists, isfile
 
 from rich import print as rich_print
 
 from .cache.main import Cache
+from .stores import MULTIPLE_FILES
 from .utils.find_dict import find as find_dict
 
 # pylint: disable=import-error
@@ -25,14 +26,14 @@ config.read("sushi.conf")
 DATA = []
 
 
-def find():
+def _open_find(
+    file,
+    function_pattern,
+):
     """finds all functions by using regex from sushi.conf"""
-    function_pattern = config["index"]["function_pattern"]
-
-    files = config["main"]["lib_path"]
 
     # first, open file
-    with open(file=files, mode="r", encoding="UTF-8") as f:
+    with open(file=file, mode="r", encoding="UTF-8") as f:
         lines = f.read().split("\n")
 
         # now, loop through all lines to see if there are any functions
@@ -43,11 +44,7 @@ def find():
             if f_pattern.match(x):
                 # append to data
                 name = extract[1].split("(")[0]
-                data = {
-                    "type": extract[0],
-                    "name": name,
-                    "all": extract,
-                }
+                data = {"type": extract[0], "name": name, "all": extract, "file": file}
 
                 # get arguments from functions and save it
 
@@ -58,8 +55,26 @@ def find():
 
         f.close()
 
-    # save indexed functions to cache so we dont have to re-index every launch
 
+def find():
+    """finds functions"""
+
+    function_pattern = config["index"]["function_pattern"]
+    files = config["main"]["lib_path"]
+
+    if MULTIPLE_FILES:
+        # get all files
+        lib_path = path.relpath(files.replace("*", ""))
+
+        all_files = listdir(lib_path)
+        all_files.remove("out")
+
+        for x in all_files:
+            _open_find(lib_path + "/" + x, function_pattern)
+    else:
+        _open_find(files, function_pattern)
+
+    # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
         Cache.update(
             Cache,
@@ -72,18 +87,25 @@ def find():
 
     return DATA
 
+
 def save():
     """saves indexed functions to file"""
 
-    rich_print("[bold yellow]sushi[/bold yellow]   saving indexed functions")
     if not exists("out"):
         mkdir("out")
 
     # create new file
-    with open(file="out/main.py", mode="w", encoding="UTF-8") as f:
-        f.write("from sushipy.execute import Execute\n")
+    for x in DATA:
+        rich_print(
+            f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')})"
+        )
 
-        for x in DATA:
+        file_data_old = x.get("file").split("/")[-1]
+        file_data = file_data_old.replace("." + config["main"]["lang"], "")
+
+        with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
+            f.write("from sushipy.execute import Execute\n")
+
             # print(x)
             fname = x["name"]
 
@@ -96,9 +118,9 @@ def save():
                     args = rf'{x.get("arg")}'[1:-1].replace("'", "")
                     args = args.replace(",,", ",")
 
-            f.write(f"def {fname}({args}):\tExecute({args})\n")
+            f.write(f"def {fname}({args}):\tExecute(file='{file_data_old}', {args})\n")
 
-    f.close()
+        f.close()
 
 
 def get_arg(name: str, data: any):

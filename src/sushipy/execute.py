@@ -7,6 +7,7 @@ executes functions from another language
 import configparser
 import inspect
 import re
+import shlex
 import subprocess
 from dataclasses import dataclass
 from os import remove, system
@@ -55,7 +56,7 @@ class Execute:
         for i, j in translate_data.items():
             TEMP_FILE = TEMP_FILE.replace(i, j)
 
-    def __init__(self, *args) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         global INIT_ARGS
 
         # get from what function was this called
@@ -63,7 +64,12 @@ class Execute:
 
         INIT_ARGS = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
-        file_name = main_config["lib_path"].split("/")[1]
+
+        file_name = main_config["lib_path"].split("/")[-1]
+        if main_config["lib_path"][-1] == "*":
+            # user selected multiple files
+            file_name = main_config["lib_path"].replace("*", kwargs.get("file"))
+            file_name = file_name.split("/")[-1]
 
         global TEMP_FILE
         TEMP_FILE = config["temp_file"]["temp_file"]
@@ -91,11 +97,11 @@ class Execute:
         f.close()
 
         subprocess.call(
-            [
+            shlex.split(
                 launch_config["exec_command"].replace(
                     "[file-name]", f"lib/temp.{temp_extension}"
                 )
-            ],
+            ),
             shell=False,
         )
 
