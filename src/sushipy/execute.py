@@ -82,12 +82,13 @@ class Execute:
     def function(self):
         """runs function from another language"""
 
+        path = main_config["lib_path"].split("/")[0]
+
         if sushicache.LAST_EXECUTED_CODE == TEMP_FILE:
-            system("./lib/out")
+            system(f"./{path}/out")
             return
 
         # create temporary file
-        path = main_config["lib_path"].split("/")[0]
         temp_extension = config["temp_file"]["extension"]
 
         with open(
@@ -112,7 +113,7 @@ class Execute:
         )
 
         # remove temp file
-        remove(f"lib/temp.{temp_extension}")
-        subprocess.call(["./lib/out"], shell=False)
+        remove(f"{path}/temp.{temp_extension}")
+        subprocess.call([f"./{path}/out"], shell=False)
 
         return
