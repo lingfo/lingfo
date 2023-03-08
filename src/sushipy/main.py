@@ -44,7 +44,6 @@ class Sushi:
                 obj.install()
 
     def __init__(self) -> None:
-        chdir(getcwd())  # todo: do we really need that?
 
         # cleaner way to run multiple functions
         functions = [self._check_config, self._extend_check, Cache]
