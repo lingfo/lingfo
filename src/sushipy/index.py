@@ -109,14 +109,11 @@ def save():
             # print(x)
             fname = x["name"]
 
-            # todo: cleanup
             args = ""
-            if x.get("arg") is not None:
-                args = x.get("arg")[0]
-
-                if len(x.get("arg")) > 1:
-                    args = rf'{x.get("arg")}'[1:-1].replace("'", "")
-                    args = args.replace(",,", ",")
+            if "arg" in x:
+                args = x["arg"][0]
+                if len(x["arg"]) > 1:
+                    args = ",".join(x["arg"][1:])
 
             f.write(f"def {fname}({args}):\tExecute(file='{file_data_old}', {args})\n")
 
