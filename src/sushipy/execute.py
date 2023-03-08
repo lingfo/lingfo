@@ -2,7 +2,7 @@
 executes functions from another language
 """
 
-# pylint: disable=invalid-name, redefined-outer-name, global-statement, missing-class-docstring
+# pylint: disable=invalid-name, redefined-outer-name, missing-class-docstring
 
 import configparser
 import inspect
@@ -52,17 +52,17 @@ class Execute:
             "$SUSHI_NEWLINE": "\n",
         }
 
-        global TEMP_FILE
         for i, j in translate_data.items():
-            TEMP_FILE = TEMP_FILE.replace(i, j)
+            self.temp_file = TEMP_FILE.replace(i, j)
 
     def __init__(self, *args, **kwargs) -> None:
-        global INIT_ARGS
+        self.init_args = INIT_ARGS
+        self.temp_file = TEMP_FILE
 
         # get from what function was this called
         call_function = inspect.stack()[1].function
 
-        INIT_ARGS = re.sub("[()]", "", rf"{args}".replace(",", ""))
+        self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
 
         file_name = main_config["lib_path"].split("/")[-1]
@@ -71,8 +71,7 @@ class Execute:
             file_name = main_config["lib_path"].replace("*", kwargs.get("file"))
             file_name = file_name.split("/")[-1]
 
-        global TEMP_FILE
-        TEMP_FILE = config["temp_file"]["temp_file"]
+        self.temp_file = config["temp_file"]["temp_file"]
 
         data = TranslateData(import_syntax, file_name, call_function)
         self.translate(data)
@@ -84,7 +83,7 @@ class Execute:
 
         path = main_config["lib_path"].split("/")[0]
 
-        if sushicache.LAST_EXECUTED_CODE == TEMP_FILE:
+        if sushicache.LAST_EXECUTED_CODE == self.temp_file:
             system(f"./{path}/out")
             return
 
