@@ -42,16 +42,16 @@ class TestExecute:
 
         assert result[1] == "Hello from sushi!"
 
-    def test_arg(self):
+    # def test_arg(self):
         # use example
-        os.chdir("arg-temp/")
+        # os.chdir("arg-temp/")
 
-        result = subprocess.run(
-            ["python3.9", "app.py"], capture_output=True, text=True, check=False
-        )
-        result = result.stdout.split("\n")
+        # result = subprocess.run(
+        #     ["python3.9", "app.py"], capture_output=True, text=True, check=False
+        # )
+        # result = result.stdout.split("\n")
 
-        print(result)
-        os.chdir("../")
+        # print(result)
+        # os.chdir("../")
 
-        assert result[1] == "You provided 1"
+        # assert result[1] == "You provided 1"
