@@ -43,7 +43,7 @@ class TestExecute:
         assert result[1] == "Hello from sushi!"
 
     def test_arg(self):
-        use example
+        # use example
         os.chdir("arg-temp/")
 
         result = subprocess.run(
