@@ -110,12 +110,12 @@ def save():
             fname = x["name"]
 
             args = ""
-            if "arg" in x:
+            if "arg" in x and x["arg"] is not None:
                 args = x["arg"][0]
                 if len(x["arg"]) > 1:
                     args = ",".join(x["arg"][1:])
 
-            f.write(f"def {fname}({args}):\tExecute(file='{file_data_old}', {args})\n")
+            f.write(f"def {fname}({args}):\tExecute('{file_data_old}', {args})\n")
 
         f.close()
 

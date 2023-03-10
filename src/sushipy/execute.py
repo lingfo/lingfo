@@ -36,6 +36,7 @@ class TranslateData:
     import_syntax: str
     file_name: str
     call_function: str
+    args: str
 
 
 class Execute:
@@ -47,13 +48,13 @@ class Execute:
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
-            "$SUSHI_ARGS": INIT_ARGS,
+            "$SUSHI_ARGS": data.args,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
         }
 
         for i, j in translate_data.items():
-            self.temp_file = TEMP_FILE.replace(i, j)
+            self.temp_file = self.temp_file.replace(i, j)
 
     def __init__(self, *args, **kwargs) -> None:
         self.init_args = INIT_ARGS
@@ -73,7 +74,7 @@ class Execute:
 
         self.temp_file = config["temp_file"]["temp_file"]
 
-        data = TranslateData(import_syntax, file_name, call_function)
+        data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
 
         self.function()
