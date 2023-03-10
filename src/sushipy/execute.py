@@ -14,6 +14,7 @@ from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
+from .stores import ONE_COMPILE
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -91,20 +92,21 @@ class Execute:
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
 
-        with open(
-            file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
-        ) as f:
-            f.write(TEMP_FILE)
-        f.close()
+        if ONE_COMPILE == False:
+            with open(
+                file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
+            ) as f:
+                f.write(TEMP_FILE)
+            f.close()
 
-        subprocess.call(
-            shlex.split(
-                launch_config["exec_command"].replace(
-                    "[file-name]", f"lib/temp.{temp_extension}"
-                )
-            ),
-            shell=False,
-        )
+            subprocess.call(
+                shlex.split(
+                    launch_config["exec_command"].replace(
+                        "[file-name]", f"lib/temp.{temp_extension}"
+                    )
+                ),
+                shell=False,
+            )
 
         Cache.update(
             Cache,
@@ -113,7 +115,8 @@ class Execute:
         )
 
         # remove temp file
-        remove(f"{path}/temp.{temp_extension}")
+        if ONE_COMPILE == False:
+            remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out"], shell=False)
 
         return
