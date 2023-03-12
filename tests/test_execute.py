@@ -33,7 +33,7 @@ class TestExecute:
         os.chdir("noarg-temp/")
 
         result = subprocess.run(
-            ["python", "app.py"], capture_output=True, text=True, check=False
+            ["python3", "app.py"], capture_output=True, text=True, check=False
         )
         result = result.stdout.split("\n")
 
@@ -43,11 +43,11 @@ class TestExecute:
         assert result[1] == "Hello from sushi!"
 
     def test_arg(self):
-        use example
+        # use example
         os.chdir("arg-temp/")
 
         result = subprocess.run(
-            ["python", "app.py"], capture_output=True, text=True, check=False
+            ["python3", "app.py"], capture_output=True, text=True, check=False
         )
         result = result.stdout.split("\n")
 

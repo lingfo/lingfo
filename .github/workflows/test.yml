@@ -1,9 +1,13 @@
 name: Test with pytest
 
-on: [push]
+on: 
+   push:
+      branches: [main]
+   pull_request:
 
 jobs:
     build:
+        if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
         runs-on: ubuntu-latest
         strategy:
             matrix:
