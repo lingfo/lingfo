@@ -4,7 +4,7 @@ sushi
 
 import configparser
 import sys
-from os import chdir, getcwd, path
+from os import path
 from os.path import isfile
 
 from rich import print as rich_print

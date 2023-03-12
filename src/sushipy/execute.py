@@ -45,7 +45,6 @@ class Execute:
     def translate(self, data: TranslateData):
         """translates string (multiple replace)"""
 
-
         # modify args to only keep the second argument
         if data.args:
             args_list = data.args.split()
