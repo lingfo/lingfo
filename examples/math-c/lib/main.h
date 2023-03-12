@@ -27,19 +27,21 @@ double itt_add()
 void matrix_multiply()
 {
     double **A, **B, **C;
-    int i,j, k;
+    int i, j, k;
 
-    // Allocate memory for matrices A and B
+    // Allocate memory for matrices A, B, and C
     A = (double **)malloc(N * sizeof(double *));
     B = (double **)malloc(N * sizeof(double *));
+    C = (double **)malloc(N * sizeof(double *));
     for (i = 0; i < N; i++) {
         A[i] = (double *)malloc(N * sizeof(double));
         B[i] = (double *)malloc(N * sizeof(double));
+        C[i] = (double *)malloc(N * sizeof(double));
     }
 
     // Initialize matrices A and B with random values
     for (i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+        for (j = 0; j < N; j++) {
             A[i][j] = rand() % 10;
             B[i][j] = rand() % 10;
         }
@@ -68,9 +70,11 @@ void matrix_multiply()
     for (i = 0; i < N; i++) {
         free(A[i]);
         free(B[i]);
+        free(C[i]);
     }
     free(A);
     free(B);
+    free(C);
 }
 
 
