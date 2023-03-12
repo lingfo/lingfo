@@ -45,10 +45,20 @@ class Execute:
     def translate(self, data: TranslateData):
         """translates string (multiple replace)"""
 
+        # modify args to only keep the second argument
+        if data.args:
+            args_list = data.args.split()
+            if len(args_list) >= 2:
+                args = args_list[1]
+            else:
+                args = ""
+        else:
+            args = ""
+
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
-            "$SUSHI_ARGS": data.args,
+            "$SUSHI_ARGS": args,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
         }
@@ -94,7 +104,7 @@ class Execute:
         with open(
             file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
         ) as f:
-            f.write(TEMP_FILE)
+            f.write(self.temp_file)
         f.close()
 
         subprocess.call(

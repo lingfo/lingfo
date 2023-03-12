@@ -1,9 +1,9 @@
 name: Test with pytest
 
-on: 
-   push:
-      branches: [main]
-   pull_request:
+on:
+    push:
+        branches: [main]
+    pull_request:
 
 jobs:
     build:
