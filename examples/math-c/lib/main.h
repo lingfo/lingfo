@@ -14,11 +14,11 @@ double itt_add()
     double result = 0.0;
     int i;
 
-    for (i = 1; i <= 1000000; i++) {
+    for (i = 1; i <= D; i++) {
         result += sin(x + i) * cos(y + i);
     }
 
-    return result;
+    printf("%d\n",result);
 }
 
 
@@ -26,12 +26,20 @@ double itt_add()
 
 void matrix_multiply()
 {
-    double A[N][N], B[N][N], C[N][N];
-    int i, j, k;
+    double **A, **B, **C;
+    int i,j, k;
+
+    // Allocate memory for matrices A and B
+    A = (double **)malloc(N * sizeof(double *));
+    B = (double **)malloc(N * sizeof(double *));
+    for (i = 0; i < N; i++) {
+        A[i] = (double *)malloc(N * sizeof(double));
+        B[i] = (double *)malloc(N * sizeof(double));
+    }
 
     // Initialize matrices A and B with random values
     for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
+        for (int j = 0; j < N; j++) {
             A[i][j] = rand() % 10;
             B[i][j] = rand() % 10;
         }
@@ -46,6 +54,23 @@ void matrix_multiply()
             }
         }
     }
+
+    // Print the resulting matrix
+    printf("Resulting matrix:\n");
+    for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+            printf("%f ", C[i][j]);
+        }
+        printf("\n");
+    }
+
+    // Free the allocated memory
+    for (i = 0; i < N; i++) {
+        free(A[i]);
+        free(B[i]);
+    }
+    free(A);
+    free(B);
 }
 
 
@@ -56,7 +81,7 @@ double array_sum()
     double sum = 0.0;
 
     // Allocate memory for the array
-    arr = (double *) malloc(N * sizeof(double));
+    arr = (double *) malloc(D * sizeof(double));
 
     // Initialize the array with random values
     for (i = 0; i < D; i++) {
@@ -70,5 +95,5 @@ double array_sum()
 
     free(arr);
 
-    printf("%d", sum);
+    printf("%d\n", sum);
 }
