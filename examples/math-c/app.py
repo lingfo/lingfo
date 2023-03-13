@@ -1,4 +1,4 @@
-# pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring, unused-import
 import timeit
 
 from sushipy.main import Sushi
