@@ -1,3 +1,5 @@
+"""one compile"""
+
 import configparser
 
 from .stores import ONE_COMPILE
@@ -7,8 +9,10 @@ config.read("sushi.conf")
 
 
 class OneCompile:
+    """one compile"""
+
     def __init__(self) -> None:
-        if ONE_COMPILE == False:
+        if not ONE_COMPILE:
             return
 
         path = config["main"]["lib_path"].split("/")[0]

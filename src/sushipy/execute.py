@@ -92,7 +92,7 @@ class Execute:
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
 
-        if ONE_COMPILE == False:
+        if not ONE_COMPILE:
             with open(
                 file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
             ) as f:
@@ -115,7 +115,7 @@ class Execute:
         )
 
         # remove temp file
-        if ONE_COMPILE == False:
+        if not ONE_COMPILE:
             remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out"], shell=False)
 
