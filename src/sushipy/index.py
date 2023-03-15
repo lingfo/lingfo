@@ -5,6 +5,7 @@ indexes all files
 
 import configparser
 import re
+import time
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
@@ -98,13 +99,16 @@ def save():
     file_data_old = DATA[0]["file"].split("/")[-1]
     file_data = file_data_old.replace("." + config["main"]["lang"], "")
 
+    print_space = " " * 100
+
     with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
         f.write("from sushipy.execute import Execute\n")
 
         # Write each function to our created file
         for x in DATA:
             rich_print(
-                f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')})"
+                f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')}){print_space}",
+                end="\r",
             )
 
             fname = x["name"]
@@ -118,6 +122,10 @@ def save():
             f.write(f"def {fname}({args}):\tExecute('{file_data_old}', {args})\n")
 
         f.close()
+
+        rich_print(
+            f"[bold green]sushi[/bold green]   saved indexed functions{print_space}",
+        )
 
 
 def get_arg(name: str, data: any):
