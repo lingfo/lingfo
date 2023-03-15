@@ -67,7 +67,9 @@ def find():
         lib_path = path.relpath(files.replace("*", ""))
 
         all_files = listdir(lib_path)
-        all_files.remove("out")
+
+        with suppress(ValueError):
+            all_files.remove("out")
 
         for x in all_files:
             _open_find(lib_path + "/" + x, function_pattern)
