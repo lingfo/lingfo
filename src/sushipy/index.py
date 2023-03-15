@@ -66,7 +66,8 @@ def find():
         lib_path = path.relpath(files.replace("*", ""))
 
         all_files = listdir(lib_path)
-        all_files.remove("out")
+        with suppress(ValueError):
+            all_files.remove("out")
 
         for x in all_files:
             _open_find(lib_path + "/" + x, function_pattern)
@@ -94,7 +95,7 @@ def save():
         mkdir("out")
 
     # create new file
-    file_data_old = DATA[0]['file'].split("/")[-1]
+    file_data_old = DATA[0]["file"].split("/")[-1]
     file_data = file_data_old.replace("." + config["main"]["lang"], "")
 
     with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
