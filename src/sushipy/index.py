@@ -5,7 +5,6 @@ indexes all files
 
 import configparser
 import re
-import time
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
@@ -105,11 +104,13 @@ def save():
         f.write("from sushipy.execute import Execute\n")
 
         # Write each function to our created file
+        # pylint: disable=line-too-long
         for x in DATA:
             rich_print(
                 f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')}){print_space}",
                 end="\r",
             )
+            # pylint: enable=line-too-long
 
             fname = x["name"]
 

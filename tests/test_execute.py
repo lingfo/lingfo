@@ -40,7 +40,7 @@ class TestExecute:
         print(result)
         os.chdir("../")
 
-        assert result[1] == "Hello from sushi!"
+        assert result[2] == "Hello from sushi!"
 
     def test_arg(self):
         # use example
@@ -54,4 +54,4 @@ class TestExecute:
         print(result)
         os.chdir("../")
 
-        assert result[1] == "You provided 1"
+        assert result[2] == "You provided 1"
