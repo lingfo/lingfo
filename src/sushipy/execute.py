@@ -48,8 +48,8 @@ class Execute:
         # modify args to only keep the second argument
         if data.args:
             args_list = data.args.split()
-            if len(args_list) >= 2:
-                args = args_list[1]
+            if len(args_list) >= 1:
+                args = args_list[0]
             else:
                 args = ""
         else:
