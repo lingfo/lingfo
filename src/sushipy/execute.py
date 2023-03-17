@@ -66,7 +66,7 @@ class Execute:
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, file, *args, **kwargs) -> None:
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
@@ -79,7 +79,7 @@ class Execute:
         file_name = main_config["lib_path"].split("/")[-1]
         if main_config["lib_path"][-1] == "*":
             # user selected multiple files
-            file_name = main_config["lib_path"].replace("*", kwargs.get("file"))
+            file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
         self.temp_file = config["temp_file"]["temp_file"]
