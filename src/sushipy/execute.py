@@ -24,7 +24,6 @@ if isfile("sushicache.py"):
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
-verbose_flag = config['launch'].getboolean('verbose', fallback=False)
 
 main_config = config["main"]
 launch_config = config["launch"]
@@ -75,7 +74,8 @@ class Execute:
         # get from what function was this called
         call_function = inspect.stack()[1].function
         verbose_print(
-            f"[bold green]sushi[/bold green]   finding function {call_function}", verbose_flag)
+            f"[bold green]sushi[/bold green]   finding function {call_function}"
+        )
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
 
@@ -110,8 +110,7 @@ class Execute:
             f.write(self.temp_file)
         f.close()
         # should print the function name for debugging purposes
-        verbose_print(
-            f"[bold green]sushi[/bold green]   executing function ", verbose_flag)
+        verbose_print(f"[bold green]sushi[/bold green]   executing function ")
         subprocess.call(
             shlex.split(
                 launch_config["exec_command"].replace(

@@ -1,6 +1,16 @@
+import configparser
+
 from rich import print as rich_print
 
-def verbose_print(message:str, verbose:bool):
+# TODO: maybe move to stores.py
+
+config = configparser.ConfigParser()
+config.read("sushi.conf")
+
+verbose_flag = config["launch"].getboolean("verbose", fallback=False)
+
+
+def verbose_print(message: str):
     """
     Prints a verbose message using rich library if the 'verbose' flag is set to True.
 
@@ -11,5 +21,5 @@ def verbose_print(message:str, verbose:bool):
     Example:
         verbose_print("This is a verbose message", verbose=True)
     """
-    if verbose:
+    if verbose_flag:
         rich_print(message)
