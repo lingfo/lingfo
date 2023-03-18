@@ -7,6 +7,7 @@ import re
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
+from rich import print as rich_print
 
 from .cache.main import Cache
 from .stores import MULTIPLE_FILES
@@ -110,7 +111,7 @@ def save():
         # Write each function to our created file
         # pylint: disable=line-too-long
         for x in DATA:
-            verbose_print(
+            rich_print(
                 f"[bold yellow]sushi[/bold yellow]   saving indexed function '{x['name']}' ({x['file']}){print_space}",
                 verbose_flag)
             # pylint: enable=line-too-long
@@ -127,7 +128,7 @@ def save():
 
         f.close()
 
-        verbose_print(
+        rich_print(
             f"[bold green]sushi[/bold green]   saved indexed functions to out/{file_data}.py{print_space}", verbose_flag)
 
 
