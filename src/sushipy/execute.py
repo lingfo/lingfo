@@ -74,7 +74,8 @@ class Execute:
 
         # get from what function was this called
         call_function = inspect.stack()[1].function
-
+        verbose_print(
+            f"[bold green]sushi[/bold green]   finding function {call_function}", verbose_flag)
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
 
