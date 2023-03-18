@@ -41,7 +41,8 @@ class OneCompile:
         f.close()
 
         # print(function_uuid)
-        self._extract_if()
+        if_data = self._extract_if()
+        print(self._parse_if(if_data, "uuid"))
 
     def _extract_if(self):
         # extracts if statements
@@ -51,3 +52,15 @@ class OneCompile:
         split_string = launch.split(else_start)
 
         return {"if": split_string[0], "else": split_string[1]}
+
+    def _parse_if(self, data, uuid):
+        translate_date = {
+            "$SUSHI_ARG": "arg",
+            "$SUSHI_UUID": uuid,
+            "$SUSHI_CODE": "code",
+        }
+
+        for i, j in translate_date.items():
+            data["if"] = data["if"].replace(i, j)
+
+        return data["if"]
