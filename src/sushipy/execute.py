@@ -14,6 +14,7 @@ from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
+from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -23,6 +24,7 @@ if isfile("sushicache.py"):
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
+verbose_flag = config['launch'].getboolean('verbose', fallback=False)
 
 main_config = config["main"]
 launch_config = config["launch"]
@@ -106,7 +108,9 @@ class Execute:
         ) as f:
             f.write(self.temp_file)
         f.close()
-
+        # should print the function name for debugging purposes
+        verbose_print(
+            f"[bold green]sushi[/bold green]   executing function ", verbose_flag)
         subprocess.call(
             shlex.split(
                 launch_config["exec_command"].replace(
