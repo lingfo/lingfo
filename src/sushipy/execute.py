@@ -14,7 +14,6 @@ from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
-from .stores import ONE_COMPILE
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -46,10 +45,20 @@ class Execute:
     def translate(self, data: TranslateData):
         """translates string (multiple replace)"""
 
+        # modify args to only keep the second argument
+        if data.args:
+            args_list = data.args.split()
+            if len(args_list) >= 1:
+                args = args_list[0]
+            else:
+                args = ""
+        else:
+            args = ""
+
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
-            "$SUSHI_ARGS": data.args,
+            "$SUSHI_ARGS": args,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
         }
@@ -57,7 +66,7 @@ class Execute:
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, file, *args) -> None:
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
@@ -70,7 +79,7 @@ class Execute:
         file_name = main_config["lib_path"].split("/")[-1]
         if main_config["lib_path"][-1] == "*":
             # user selected multiple files
-            file_name = main_config["lib_path"].replace("*", kwargs.get("file"))
+            file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
         self.temp_file = config["temp_file"]["temp_file"]
@@ -92,21 +101,20 @@ class Execute:
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
 
-        if not ONE_COMPILE:
-            with open(
-                file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
-            ) as f:
-                f.write(TEMP_FILE)
-            f.close()
+        with open(
+            file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
+        ) as f:
+            f.write(self.temp_file)
+        f.close()
 
-            subprocess.call(
-                shlex.split(
-                    launch_config["exec_command"].replace(
-                        "[file-name]", f"lib/temp.{temp_extension}"
-                    )
-                ),
-                shell=False,
-            )
+        subprocess.call(
+            shlex.split(
+                launch_config["exec_command"].replace(
+                    "[file-name]", f"lib/temp.{temp_extension}"
+                )
+            ),
+            shell=False,
+        )
 
         Cache.update(
             Cache,
@@ -115,8 +123,7 @@ class Execute:
         )
 
         # remove temp file
-        if not ONE_COMPILE:
-            remove(f"{path}/temp.{temp_extension}")
+        remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out"], shell=False)
 
         return

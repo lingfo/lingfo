@@ -47,7 +47,6 @@ def _open_find(
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
 
                 # get arguments from functions and save it
-
                 # pylint: disable=unsupported-binary-operation
                 arg_data = get_arg(name, data)
                 DATA.append(data | {"arg": arg_data})
@@ -97,18 +96,23 @@ def save():
         mkdir("out")
 
     # create new file
-    for x in DATA:
-        rich_print(
-            f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')})"
-        )
+    file_data_old = DATA[0]["file"].split("/")[-1]
+    file_data = file_data_old.replace("." + config["main"]["lang"], "")
 
-        file_data_old = x.get("file").split("/")[-1]
-        file_data = file_data_old.replace("." + config["main"]["lang"], "")
+    print_space = " " * 100
 
-        with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
-            f.write("from sushipy.execute import Execute\n")
+    with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
+        f.write("from sushipy.execute import Execute\n")
 
-            # print(x)
+        # Write each function to our created file
+        # pylint: disable=line-too-long
+        for x in DATA:
+            rich_print(
+                f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')}){print_space}",
+                end="\r",
+            )
+            # pylint: enable=line-too-long
+
             fname = x["name"]
 
             args = ""
@@ -120,6 +124,10 @@ def save():
             f.write(f"def {fname}({args}):\tExecute('{file_data_old}', {args})\n")
 
         f.close()
+
+        rich_print(
+            f"[bold green]sushi[/bold green]   saved indexed functions{print_space}",
+        )
 
 
 def get_arg(name: str, data: any):
