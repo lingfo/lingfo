@@ -2,18 +2,16 @@
 indexes all files
 """
 
-
 import configparser
 import re
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
 
-from rich import print as rich_print
-
 from .cache.main import Cache
 from .stores import MULTIPLE_FILES
 from .utils.find_dict import find as find_dict
+from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -22,16 +20,18 @@ if isfile("sushicache.py"):
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
+verbose_flag = config['launch'].getboolean('verbose', fallback=False)
 
 DATA = []
 
 
 def _open_find(
-    file,
-    function_pattern,
+        file,
+        function_pattern,
 ):
     """finds all functions by using regex from sushi.conf"""
-
+    verbose_print(
+        f"[bold green]sushi[/bold green]   finding functions in {file} from sushi.conf", verbose_flag)
     # first, open file
     with open(file=file, mode="r", encoding="UTF-8") as f:
         lines = f.read().split("\n")
@@ -50,6 +50,8 @@ def _open_find(
                 # pylint: disable=unsupported-binary-operation
                 arg_data = get_arg(name, data)
                 DATA.append(data | {"arg": arg_data})
+                verbose_print(
+                    f"[bold green]sushi[/bold green]   function '{name}' takes args: {arg_data}", verbose_flag)
                 # pylint: enable=unsupported-binary-operation
 
         f.close()
@@ -76,6 +78,8 @@ def find():
 
     # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
+        verbose_print(
+            f"[bold green]sushi[/bold green]   updating cache", verbose_flag)
         Cache.update(
             Cache,
             f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
@@ -106,10 +110,9 @@ def save():
         # Write each function to our created file
         # pylint: disable=line-too-long
         for x in DATA:
-            rich_print(
-                f"[bold yellow]sushi[/bold yellow]   saving indexed functions ({x.get('file')}){print_space}",
-                end="\r",
-            )
+            verbose_print(
+                f"[bold yellow]sushi[/bold yellow]   saving indexed function '{x['name']}' ({x['file']}){print_space}",
+                verbose_flag)
             # pylint: enable=line-too-long
 
             fname = x["name"]
@@ -124,14 +127,14 @@ def save():
 
         f.close()
 
-        rich_print(
-            f"[bold green]sushi[/bold green]   saved indexed functions{print_space}",
-        )
+        verbose_print(
+            f"[bold green]sushi[/bold green]   saved indexed functions to out/{file_data}.py{print_space}", verbose_flag)
 
 
 def get_arg(name: str, data: any):
     """gets all arguments from function"""
-
+    verbose_print(
+        f"[bold green]sushi[/bold green]   getting all args for '{name}'", verbose_flag)
     args = []
     find_data = find_dict(name, [data], "name")
 
@@ -161,10 +164,13 @@ def get_arg(name: str, data: any):
                     last_item = multiple_args[-1]
                     multiple_args.pop()
                     multiple_args.append(last_item.replace(")", ""))
+                    verbose_print(
+                        f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}", verbose_flag)
 
                     return multiple_args
 
         elif split_args != ")":
             args.append(split_args.replace(")", ""))
-
+        verbose_print(
+            f"[bold green]sushi[/bold green]   function '{name}' uses args: {args}", verbose_flag)
         return args
