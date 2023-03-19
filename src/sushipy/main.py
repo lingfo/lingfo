@@ -7,7 +7,7 @@ import sys
 from os import path
 from os.path import isfile
 
-from rich import print as rich_print
+from .utils.verbose_print import verbose_print
 
 from .cache.main import Cache
 from .config import extends
@@ -44,7 +44,7 @@ class Sushi:
                 obj.install()
 
     def __init__(self) -> None:
-
+        verbose_print(f"[bold green]sushi[/bold green]   checking sushi config ")
         # cleaner way to run multiple functions
         functions = [self._check_config, self._extend_check, Cache]
         for f in functions:
