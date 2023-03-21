@@ -27,22 +27,20 @@ class OneCompile:
         path = config["main"]["lib_path"].split("/")[0]
         temp_extension = config["temp_file"]["extension"]
 
-        function_uuid = []
-
+        # TODO: cleanup
         with open(
             file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
         ) as f:
-            for x in DATA:
-                # generate uuids for functions
-                function_uuid.append({"name": x["name"], "uuid": str(uuid.uuid4())})
+            if_data = self._extract_if()
+            out = self._parse_if(if_data["if"], str(uuid.uuid4()))
 
-            # now create if statements
+            for x in DATA:
+                out += self._parse_if(if_data["else"], str(uuid.uuid4()))
+            print(out)
 
         f.close()
 
         # print(function_uuid)
-        if_data = self._extract_if()
-        print(self._parse_if(if_data, "uuid"))
 
     def _extract_if(self):
         # extracts if statements
@@ -61,6 +59,6 @@ class OneCompile:
         }
 
         for i, j in translate_date.items():
-            data["if"] = data["if"].replace(i, j)
+            data = data.replace(i, j)
 
-        return data["if"]
+        return data
