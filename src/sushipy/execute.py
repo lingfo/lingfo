@@ -67,7 +67,7 @@ class Execute:
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, file, *args, **kwargs) -> None:
+    def __init__(self, file, *args) -> None:
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
