@@ -16,6 +16,9 @@ from rich import print as rich_print
 # pylint: disable=import-error, too-few-public-methods
 from ..cache.main import Cache
 
+# from utils.verbose_print import verbose_print
+
+
 if isfile("sushicache.py"):
     import sushicache
 # pylint: enable=import-error
@@ -55,9 +58,9 @@ class ConfigExtends:
             content = f.read()
         pydoc.pager(content)
 
-        rich_print(
-            "[bold red]sushi[/bold red]   Press C to cancel, otherwise press any other key."
-        )
+        # rich_print(
+        #     "[bold red]sushi[/bold red]   Press C to cancel, otherwise press any other key."
+        # )
 
         out = input()
 
@@ -68,7 +71,7 @@ class ConfigExtends:
     def _get_repo(self, data: str, filename: str):
         repourl = f"https://github.com/{data.get('user')}/{data.get('name')}"
 
-        rich_print("[bold yellow]sushi[/bold yellow]   cloning repository")
+        # verbose_print(f"[bold green]sushi[/bold green]   cloning repository {repourl}")
 
         # clone repository
         repo = Repo.clone_from(repourl, f"{tempdir}/sushi/")
@@ -87,6 +90,9 @@ class ConfigExtends:
             )
 
         rmtree(f"{tempdir}/sushi/")
+        # verbose_print(
+        #     f"[bold green]sushi[/bold green]   removing file {tempdir}/sushi/"
+        # )
 
     def install(self):
         """installs custom config"""
