@@ -2,6 +2,7 @@
 
 import configparser
 import uuid
+from contextlib import suppress
 from os.path import isfile
 
 from .stores import ONE_COMPILE
@@ -32,12 +33,14 @@ class OneCompile:
             file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
         ) as f:
             if_data = self._extract_if()
-            out = self._parse_if(if_data["if"], str(uuid.uuid4()))
+            out = self._parse_if(if_data["if"], str(uuid.uuid4()), DATA[0]["name"])
 
-            for x in DATA:
-                out += self._parse_if(if_data["else"], str(uuid.uuid4()))
-            print(out)
-
+            for x in range(len(DATA)):
+                with suppress(IndexError):
+                    out += self._parse_if(
+                        if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
+                    )
+            f.write(out)
         f.close()
 
         # print(function_uuid)
@@ -51,11 +54,11 @@ class OneCompile:
 
         return {"if": split_string[0], "else": split_string[1]}
 
-    def _parse_if(self, data, uuid):
+    def _parse_if(self, data, uuid, code):
         translate_date = {
             "$SUSHI_ARG": "arg",
             "$SUSHI_UUID": uuid,
-            "$SUSHI_CODE": "code",
+            "$SUSHI_CODE": code,
         }
 
         for i, j in translate_date.items():
