@@ -12,6 +12,7 @@ import subprocess
 from dataclasses import dataclass
 from os import remove, system
 from os.path import isfile
+from typing import Optional
 
 from .cache.main import Cache
 
@@ -71,7 +72,10 @@ class Execute:
         self.temp_file = TEMP_FILE
 
         # get from what function was this called
-        call_function = inspect.stack()[1].function
+        if sushicache.CUSTOM_TEMP_FILE is None:
+            call_function = inspect.stack()[1].function
+        else:
+            call_function = sushicache.CUSTOM_TEMP_FILE
 
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
@@ -94,9 +98,9 @@ class Execute:
 
         path = main_config["lib_path"].split("/")[0]
 
-        if sushicache.LAST_EXECUTED_CODE == self.temp_file:
-            system(f"./{path}/out")
-            return
+        # if sushicache.LAST_EXECUTED_CODE == self.temp_file:
+        #     system(f"./{path}/out")
+        #     return TODO
 
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
@@ -123,7 +127,7 @@ class Execute:
         )
 
         # remove temp file
-        remove(f"{path}/temp.{temp_extension}")
+        # remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out"], shell=False)
 
         return

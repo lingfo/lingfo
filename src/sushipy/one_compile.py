@@ -5,6 +5,7 @@ import uuid
 from contextlib import suppress
 from os.path import isfile
 
+from .cache.main import Cache
 from .stores import ONE_COMPILE
 
 config = configparser.ConfigParser()
@@ -25,25 +26,21 @@ class OneCompile:
         if not ONE_COMPILE:
             return
 
-        path = config["main"]["lib_path"].split("/")[0]
-        temp_extension = config["temp_file"]["extension"]
-
         # TODO: cleanup
-        with open(
-            file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
-        ) as f:
-            if_data = self._extract_if()
-            out = self._parse_if(if_data["if"], str(uuid.uuid4()), DATA[0]["name"])
+        if_data = self._extract_if()
+        out = self._parse_if(if_data["if"], str(uuid.uuid4()), DATA[0]["name"])
 
-            for x in range(len(DATA)):
-                with suppress(IndexError):
-                    out += self._parse_if(
-                        if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
-                    )
-            f.write(out)
-        f.close()
+        for x in range(len(DATA)):
+            with suppress(IndexError):
+                out += self._parse_if(
+                    if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
+                )
 
-        # print(function_uuid)
+        Cache.update(
+            Cache,
+            f"CUSTOM_TEMP_FILE = {sushicache.CUSTOM_TEMP_FILE}",
+            f'CUSTOM_TEMP_FILE = """{out}"""',
+        )
 
     def _extract_if(self):
         # extracts if statements
