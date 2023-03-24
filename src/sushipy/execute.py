@@ -86,7 +86,22 @@ class Execute:
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
+        # if () is in temp file remove it
         self.temp_file = config["temp_file"]["temp_file"]
+        delimiter = "SUSHI_FUNCTION"
+
+        index = self.temp_file.find(delimiter)
+        after = self.temp_file[index + len(delimiter) :]
+
+        # TODO: cleanup!
+        after = (
+            after.replace("$SUSHI_ARGS", "")
+            .replace("$SUSHI_SEMICOLON", "")
+            .replace("}", "")
+        )
+
+        if after == "()":
+            self.temp_file = self.temp_file.replace("($SUSHI_ARGS)", "")
 
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)

@@ -29,12 +29,13 @@ class OneCompile:
         # TODO: cleanup
         if_data = self._extract_if()
         out = self._parse_if(if_data["if"], str(uuid.uuid4()), DATA[0]["name"])
-
-        for x in range(len(DATA)):
-            with suppress(IndexError):
-                out += self._parse_if(
-                    if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
-                )
+        
+        if len(DATA) > 1:
+            for x in range(len(DATA)):
+                with suppress(IndexError):
+                    out += self._parse_if(
+                        if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
+                    )
 
         Cache.update(
             Cache,
@@ -53,7 +54,8 @@ class OneCompile:
 
     def _parse_if(self, data, uuid, code):
         translate_date = {
-            "$SUSHI_ARG": "arg",
+            "$SUSHI_ARG_NUM": "1",
+            "$SUSHI_SEMICOLON": ";",
             "$SUSHI_UUID": uuid,
             "$SUSHI_CODE": code,
         }
