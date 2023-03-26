@@ -14,6 +14,7 @@ from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
+from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -72,7 +73,9 @@ class Execute:
 
         # get from what function was this called
         call_function = inspect.stack()[1].function
-
+        verbose_print(
+            f"[bold green]sushi[/bold green]   finding function {call_function}"
+        )
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
 
@@ -106,7 +109,8 @@ class Execute:
         ) as f:
             f.write(self.temp_file)
         f.close()
-
+        # should print the function name for debugging purposes
+        verbose_print(f"[bold green]sushi[/bold green]   executing function ")
         subprocess.call(
             shlex.split(
                 launch_config["exec_command"].replace(
