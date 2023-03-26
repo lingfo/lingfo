@@ -28,8 +28,9 @@ class OneCompile:
 
         # TODO: cleanup
         if_data = self._extract_if()
-        out = self._parse_if(if_data["if"], str(uuid.uuid4()), DATA[0]["name"])
-        
+        data = [{"uuid": str(uuid.uuid4()), "name": DATA[0]}]
+        out = self._parse_if(if_data["if"], data["uuid"], data["name"])
+
         if len(DATA) > 1:
             for x in range(len(DATA)):
                 with suppress(IndexError):
@@ -42,6 +43,8 @@ class OneCompile:
             f"CUSTOM_TEMP_FILE = {sushicache.CUSTOM_TEMP_FILE}",
             f'CUSTOM_TEMP_FILE = """{out}"""',
         )
+
+        return data
 
     def _extract_if(self):
         # extracts if statements
