@@ -174,9 +174,12 @@ def get_arg(name: str, data: any):
                     last_item = multiple_args[-1]
                     multiple_args.pop()
                     multiple_args.append(last_item.replace(")", ""))
+
+                    # pylint: disable=line-too-long
                     verbose_print(
                         f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
                     )
+                    # pylint: enable=line-too-long
 
                     return multiple_args
 

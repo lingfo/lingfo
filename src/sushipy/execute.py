@@ -110,7 +110,7 @@ class Execute:
             f.write(self.temp_file)
         f.close()
         # should print the function name for debugging purposes
-        verbose_print(f"[bold green]sushi[/bold green]   executing function ")
+        verbose_print("[bold green]sushi[/bold green]   executing function ")
         subprocess.call(
             shlex.split(
                 launch_config["exec_command"].replace(
