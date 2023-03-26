@@ -101,7 +101,15 @@ def save():
     print_space = " " * 100
 
     with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
-        f.write("from sushipy.execute import Execute\n")
+        # TODO: cleanup
+        try:
+            if config.getboolean("index", "dev"):
+                f.write("from src.sushipy.execute import Execute\n")
+            else:
+                f.write("from sushipy.execute import Execute\n")
+
+        except configparser.NoOptionError:
+            f.write("from sushipy.execute import Execute\n")
 
         # Write each function to our created file
         # pylint: disable=line-too-long
