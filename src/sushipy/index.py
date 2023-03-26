@@ -12,6 +12,7 @@ from os.path import exists, isfile
 from rich import print as rich_print
 
 from .cache.main import Cache
+from .one_compile import OneCompile
 from .stores import MULTIPLE_FILES
 from .utils.find_dict import find as find_dict
 
@@ -45,6 +46,11 @@ def _open_find(
                 # append to data
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
+
+                oc_data = OneCompile().setup()
+                for x in oc_data:
+                    if x["name"] == name:
+                        data.__setitem__("uuid", x["uuid"])
 
                 # get arguments from functions and save it
                 # pylint: disable=unsupported-binary-operation

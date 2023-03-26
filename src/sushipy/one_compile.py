@@ -22,14 +22,14 @@ DATA = sushicache.INDEXED_FUNCTIONS
 class OneCompile:
     """one compile"""
 
-    def __init__(self) -> None:
+    def setup(self) -> None:
         if not ONE_COMPILE:
             return
 
         # TODO: cleanup
         if_data = self._extract_if()
-        data = [{"uuid": str(uuid.uuid4()), "name": DATA[0]}]
-        out = self._parse_if(if_data["if"], data["uuid"], data["name"])
+        data = [{"uuid": str(uuid.uuid4()), "name": DATA[0]["name"]}]
+        out = self._parse_if(if_data["if"], data[0]["uuid"], data[0]["name"])
 
         if len(DATA) > 1:
             for x in range(len(DATA)):
