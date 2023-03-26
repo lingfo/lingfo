@@ -81,7 +81,7 @@ def find():
 
     # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
-        verbose_print(f"[bold green]sushi[/bold green]   updating cache")
+        verbose_print("[bold green]sushi[/bold green]   updating cache")
         Cache.update(
             Cache,
             f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
