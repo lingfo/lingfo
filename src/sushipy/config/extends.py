@@ -12,10 +12,11 @@ from shutil import rmtree
 
 from git import Repo
 from rich import print as rich_print
-from utils.verbose_print import verbose_print
 
 # pylint: disable=import-error, too-few-public-methods
 from ..cache.main import Cache
+
+# from utils.verbose_print import verbose_print TODO
 
 if isfile("sushicache.py"):
     import sushicache
@@ -69,7 +70,7 @@ class ConfigExtends:
     def _get_repo(self, data: str, filename: str):
         repourl = f"https://github.com/{data.get('user')}/{data.get('name')}"
 
-        verbose_print(f"[bold green]sushi[/bold green]   cloning repository {repourl}")
+        # verbose_print(f"[bold green]sushi[/bold green]   cloning repository {repourl}")
 
         # clone repository
         repo = Repo.clone_from(repourl, f"{tempdir}/sushi/")
@@ -88,9 +89,9 @@ class ConfigExtends:
             )
 
         rmtree(f"{tempdir}/sushi/")
-        verbose_print(
-            f"[bold green]sushi[/bold green]   removing file {tempdir}/sushi/"
-        )
+        # verbose_print(
+        #     f"[bold green]sushi[/bold green]   removing file {tempdir}/sushi/"
+        # )
 
     def install(self):
         """installs custom config"""
