@@ -1,10 +1,7 @@
 ---
 name: Feature request
-about: Have a idea for new feature? Report it here!
-title: ''
+about: Have an idea for a new feature? Report it here!
+title: ""
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
-
-
