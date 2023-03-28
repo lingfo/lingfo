@@ -49,8 +49,8 @@ class Execute:
         # modify args to only keep the second argument
         if data.args:
             args_list = data.args.split()
-            if len(args_list) >= 1:
-                args = args_list[0]
+            if len(args_list) >= 2:
+                args = args_list[1]
             else:
                 args = ""
         else:
@@ -67,7 +67,7 @@ class Execute:
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, file, *args) -> None:
+    def __init__(self, file, uuid, *args) -> None:
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
@@ -106,9 +106,9 @@ class Execute:
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
 
-        self.function()
+        self.function(uuid)
 
-    def function(self):
+    def function(self, uuid):
         """runs function from another language"""
 
         path = main_config["lib_path"].split("/")[0]
@@ -141,8 +141,9 @@ class Execute:
             f'LAST_EXECUTED_CODE = """{TEMP_FILE}"""',
         )
 
+        print(uuid)
         # remove temp file
         # remove(f"{path}/temp.{temp_extension}")
-        subprocess.call([f"./{path}/out"], shell=False)
+        subprocess.call([f"./{path}/out", uuid], shell=False)
 
         return

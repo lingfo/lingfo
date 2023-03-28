@@ -40,7 +40,7 @@ class OneCompile:
 
         Cache.update(
             Cache,
-            f"CUSTOM_TEMP_FILE = {sushicache.CUSTOM_TEMP_FILE}",
+            f'CUSTOM_TEMP_FILE = """{sushicache.CUSTOM_TEMP_FILE}"""',
             f'CUSTOM_TEMP_FILE = """{out}"""',
         )
 

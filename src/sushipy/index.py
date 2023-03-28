@@ -42,7 +42,7 @@ def _open_find(
             f_pattern = re.compile(function_pattern, re.IGNORECASE)
             extract = x.split()
 
-            if f_pattern.match(x):
+            if f_pattern.match(x) and """""".__eq__(sushicache.CUSTOM_TEMP_FILE):
                 # append to data
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
@@ -90,7 +90,8 @@ def find():
         )
 
     # if old_cache != DATA:
-    save()
+    if """""".__eq__(sushicache.CUSTOM_TEMP_FILE):
+        save()
 
     return DATA
 
@@ -135,7 +136,9 @@ def save():
                 if len(x["arg"]) > 1:
                     args = ",".join(x["arg"][1:])
 
-            f.write(f"def {fname}({args}):\tExecute('{file_data_old}', {args})\n")
+            f.write(
+                f"def {fname}({args}):\tExecute('{file_data_old}', '{x['uuid']}', {args})\n"
+            )
 
         f.close()
 
