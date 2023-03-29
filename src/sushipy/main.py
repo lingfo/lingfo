@@ -17,6 +17,7 @@ from .utils.verbose_print import verbose_print
 config = configparser.ConfigParser()
 config.read("sushi.conf")
 
+
 # pylint: disable=import-error
 if isfile("sushicache.py"):
     import sushicache

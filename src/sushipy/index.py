@@ -191,6 +191,11 @@ def get_arg(name: str, data: any):
                     verbose_print(
                         f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
                     )
+
+                    # pylint: disable=line-too-long
+                    verbose_print(
+                        f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
+                    )
                     # pylint: enable=line-too-long
 
                     return multiple_args
