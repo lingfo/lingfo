@@ -10,9 +10,7 @@ import re
 import shlex
 import subprocess
 from dataclasses import dataclass
-from os import remove, system
 from os.path import isfile
-from typing import Optional
 
 from .cache.main import Cache
 from .utils.verbose_print import verbose_print
@@ -131,7 +129,7 @@ class Execute:
             f.write(self.temp_file)
         f.close()
         # should print the function name for debugging purposes
-        verbose_print(f"[bold green]sushi[/bold green]   executing function ")
+        verbose_print("[bold green]sushi[/bold green]   executing function ")
         subprocess.call(
             shlex.split(
                 launch_config["exec_command"].replace(
@@ -151,5 +149,3 @@ class Execute:
         # remove temp file
         # remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out", uuid], shell=False)
-
-        return

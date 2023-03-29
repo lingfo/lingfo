@@ -18,7 +18,8 @@ class Cache:
     def _exists(self) -> bool:
         return path.isfile("sushicache.py")
 
-    # TODO: make it so when updating cache we dont need to provide old data (Cache.update('CUSTOM_TEMP_FILE = None', 'CUSTOM_TEMP_FILE = '))
+    # TODO: make it so when updating cache we dont need to provide
+    # old data (Cache.update('CUSTOM_TEMP_FILE = None', 'CUSTOM_TEMP_FILE = '))
     def update(self, old: str, new: str):
         """
         overwrites old cache data with new one

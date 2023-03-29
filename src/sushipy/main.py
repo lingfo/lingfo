@@ -7,11 +7,12 @@ import sys
 from os import path
 from os.path import isfile
 
-from .utils.verbose_print import verbose_print
+from rich import print as rich_print
 
 from .cache.main import Cache
 from .config import extends
 from .index import find
+from .utils.verbose_print import verbose_print
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
@@ -44,7 +45,7 @@ class Sushi:
                 obj.install()
 
     def __init__(self) -> None:
-        verbose_print(f"[bold green]sushi[/bold green]   checking sushi config ")
+        verbose_print("[bold green]sushi[/bold green]   checking sushi config ")
         # cleaner way to run multiple functions
         functions = [self._check_config, self._extend_check, Cache]
         for f in functions:

@@ -44,7 +44,7 @@ def _open_find(
             f_pattern = re.compile(function_pattern, re.IGNORECASE)
             extract = x.split()
 
-            if f_pattern.match(x) and """""".__eq__(sushicache.CUSTOM_TEMP_FILE):
+            if f_pattern.match(x) and sushicache.CUSTOM_TEMP_FILE == """""":
                 # append to data
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
@@ -52,7 +52,10 @@ def _open_find(
                 oc_data = OneCompile().setup()
                 for x in oc_data:
                     if x["name"] == name:
+                        # TODO: dont disable this error and just fix it
+                        # pylint: disable=unnecessary-dunder-call
                         data.__setitem__("uuid", x["uuid"])
+                        # pylint: enable=unnecessary-dunder-call
 
                 # get arguments from functions and save it
                 # pylint: disable=unsupported-binary-operation
@@ -88,7 +91,7 @@ def find():
 
     # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
-        verbose_print(f"[bold green]sushi[/bold green]   updating cache")
+        verbose_print("[bold green]sushi[/bold green]   updating cache")
         Cache.update(
             Cache,
             f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
@@ -96,7 +99,7 @@ def find():
         )
 
     # if old_cache != DATA:
-    if """""".__eq__(sushicache.CUSTOM_TEMP_FILE):
+    if sushicache.CUSTOM_TEMP_FILE == """""":
         save()
 
     return DATA
@@ -184,9 +187,11 @@ def get_arg(name: str, data: any):
                     last_item = multiple_args[-1]
                     multiple_args.pop()
                     multiple_args.append(last_item.replace(")", ""))
+                    # pylint: disable=line-too-long
                     verbose_print(
                         f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
                     )
+                    # pylint: enable=line-too-long
 
                     return multiple_args
 

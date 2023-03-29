@@ -1,3 +1,5 @@
+"""verbose print"""
+
 import configparser
 
 from rich import print as rich_print

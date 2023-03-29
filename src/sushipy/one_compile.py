@@ -23,8 +23,9 @@ class OneCompile:
     """one compile"""
 
     def setup(self) -> None:
+        """setup onecompile"""
         if not ONE_COMPILE:
-            return
+            return [{}]
 
         # TODO: cleanup
         if_data = self._extract_if()
@@ -55,11 +56,11 @@ class OneCompile:
 
         return {"if": split_string[0], "else": split_string[1]}
 
-    def _parse_if(self, data, uuid, code):
+    def _parse_if(self, data, uuid_data, code):
         translate_date = {
             "$SUSHI_ARG_NUM": "1",
             "$SUSHI_SEMICOLON": ";",
-            "$SUSHI_UUID": uuid,
+            "$SUSHI_UUID": uuid_data,
             "$SUSHI_CODE": code,
         }
 
