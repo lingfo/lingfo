@@ -12,9 +12,11 @@ from .utils.verbose_print import verbose_print
 from .cache.main import Cache
 from .config import extends
 from .index import find
+from .utils.verbose_print import verbose_print
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
+
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -45,6 +47,7 @@ class Sushi:
 
     def __init__(self) -> None:
         verbose_print(f"[bold green]sushi[/bold green]   checking sushi config ")
+        
         # cleaner way to run multiple functions
         functions = [self._check_config, self._extend_check, Cache]
         for f in functions:

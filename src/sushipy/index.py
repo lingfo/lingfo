@@ -88,7 +88,8 @@ def find():
 
     # save indexed functions to cache so we dont have to re-index every launch
     with suppress(NameError):
-        verbose_print(f"[bold green]sushi[/bold green]   updating cache")
+        verbose_print("[bold green]sushi[/bold green]   updating cache")
+
         Cache.update(
             Cache,
             f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
@@ -187,6 +188,12 @@ def get_arg(name: str, data: any):
                     verbose_print(
                         f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
                     )
+
+                    # pylint: disable=line-too-long
+                    verbose_print(
+                        f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
+                    )
+                    # pylint: enable=line-too-long
 
                     return multiple_args
 
