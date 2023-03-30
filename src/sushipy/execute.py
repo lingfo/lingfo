@@ -10,6 +10,7 @@ import re
 import shlex
 import subprocess
 from dataclasses import dataclass
+from os import system
 from os.path import isfile
 
 from .cache.main import Cache
@@ -116,9 +117,9 @@ class Execute:
 
         path = main_config["lib_path"].split("/")[0]
 
-        # if sushicache.LAST_EXECUTED_CODE == self.temp_file:
-        #     system(f"./{path}/out")
-        #     return TODO
+        if sushicache.LAST_EXECUTED_CODE == self.temp_file:
+            system(f"./{path}/out")
+            return
 
         # create temporary file
         temp_extension = config["temp_file"]["extension"]

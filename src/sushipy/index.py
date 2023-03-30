@@ -12,7 +12,7 @@ from rich import print as rich_print
 
 from .cache.main import Cache
 from .one_compile import OneCompile
-from .stores import MULTIPLE_FILES
+from .stores import MULTIPLE_FILES, ONE_COMPILE
 from .utils.find_dict import find as find_dict
 from .utils.verbose_print import verbose_print
 
@@ -49,13 +49,15 @@ def _open_find(
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
 
-                oc_data = OneCompile().setup()
-                for x in oc_data:
-                    if x["name"] == name:
-                        # TODO: dont disable this error and just fix it
-                        # pylint: disable=unnecessary-dunder-call
-                        data.__setitem__("uuid", x["uuid"])
-                        # pylint: enable=unnecessary-dunder-call
+                if ONE_COMPILE:
+                    oc_data = OneCompile().setup()
+                    for x in oc_data:
+                        if x["name"] == name:
+                            # TODO: dont disable this error and just fix it
+                            # pylint: disable=unnecessary-dunder-call
+                            data.__setitem__("uuid", x["uuid"])
+                            # pylint: enable=unnecessary-dunder-call
+                data.__setitem__("uuid", "")
 
                 # get arguments from functions and save it
                 # pylint: disable=unsupported-binary-operation

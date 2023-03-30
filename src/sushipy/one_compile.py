@@ -24,8 +24,6 @@ class OneCompile:
 
     def setup(self) -> None:
         """setup onecompile"""
-        if not ONE_COMPILE:
-            return [{}]
 
         # TODO: cleanup
         if_data = self._extract_if()
