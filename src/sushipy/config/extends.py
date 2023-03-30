@@ -57,9 +57,9 @@ class ConfigExtends:
             content = f.read()
         pydoc.pager(content)
 
-        rich_print(
-            "[bold red]sushi[/bold red]   Press C to cancel, otherwise press any other key."
-        )
+        # rich_print(
+        #     "[bold red]sushi[/bold red]   Press C to cancel, otherwise press any other key."
+        # )
 
         out = input()
 

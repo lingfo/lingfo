@@ -11,6 +11,7 @@ from os.path import exists, isfile
 from rich import print as rich_print
 
 from .cache.main import Cache
+from .one_compile import OneCompile
 from .stores import MULTIPLE_FILES
 from .utils.find_dict import find as find_dict
 from .utils.verbose_print import verbose_print
@@ -43,10 +44,18 @@ def _open_find(
             f_pattern = re.compile(function_pattern, re.IGNORECASE)
             extract = x.split()
 
-            if f_pattern.match(x):
+            if f_pattern.match(x) and sushicache.CUSTOM_TEMP_FILE == """""":
                 # append to data
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
+
+                oc_data = OneCompile().setup()
+                for x in oc_data:
+                    if x["name"] == name:
+                        # TODO: dont disable this error and just fix it
+                        # pylint: disable=unnecessary-dunder-call
+                        data.__setitem__("uuid", x["uuid"])
+                        # pylint: enable=unnecessary-dunder-call
 
                 # get arguments from functions and save it
                 # pylint: disable=unsupported-binary-operation
@@ -71,6 +80,7 @@ def find():
         lib_path = path.relpath(files.replace("*", ""))
 
         all_files = listdir(lib_path)
+
         with suppress(ValueError):
             all_files.remove("out")
 
@@ -89,7 +99,8 @@ def find():
         )
 
     # if old_cache != DATA:
-    save()
+    if sushicache.CUSTOM_TEMP_FILE == """""":
+        save()
 
     return DATA
 
@@ -133,7 +144,9 @@ def save():
                 if len(x["arg"]) > 1:
                     args = ",".join(x["arg"][1:])
 
-            f.write(f"def {fname}({args}):\tExecute('{file_data_old}', {args})\n")
+            f.write(
+                f"def {fname}({args}):\tExecute('{file_data_old}', '{x['uuid']}', {args})\n"
+            )
 
         f.close()
 
@@ -174,6 +187,10 @@ def get_arg(name: str, data: any):
                     last_item = multiple_args[-1]
                     multiple_args.pop()
                     multiple_args.append(last_item.replace(")", ""))
+                    # pylint: disable=line-too-long
+                    verbose_print(
+                        f"[bold green]sushi[/bold green]  function '{name}' uses args: {multiple_args}"
+                    )
 
                     # pylint: disable=line-too-long
                     verbose_print(

@@ -10,7 +10,6 @@ import re
 import shlex
 import subprocess
 from dataclasses import dataclass
-from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
@@ -49,8 +48,8 @@ class Execute:
         # modify args to only keep the second argument
         if data.args:
             args_list = data.args.split()
-            if len(args_list) >= 1:
-                args = args_list[0]
+            if len(args_list) >= 2:
+                args = args_list[1]
             else:
                 args = ""
         else:
@@ -67,11 +66,16 @@ class Execute:
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, file, *args) -> None:
+    def __init__(self, file, uuid, *args) -> None:
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
         # get from what function was this called
+        if sushicache.CUSTOM_TEMP_FILE is None:
+            call_function = inspect.stack()[1].function
+        else:
+            call_function = sushicache.CUSTOM_TEMP_FILE
+
         call_function = inspect.stack()[1].function
         verbose_print(
             f"[bold green]sushi[/bold green]   finding function {call_function}"
@@ -85,21 +89,36 @@ class Execute:
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
+        # if () is in temp file remove it
         self.temp_file = config["temp_file"]["temp_file"]
+        delimiter = "SUSHI_FUNCTION"
+
+        index = self.temp_file.find(delimiter)
+        after = self.temp_file[index + len(delimiter) :]
+
+        # TODO: cleanup!
+        after = (
+            after.replace("$SUSHI_ARGS", "")
+            .replace("$SUSHI_SEMICOLON", "")
+            .replace("}", "")
+        )
+
+        if after == "()":
+            self.temp_file = self.temp_file.replace("($SUSHI_ARGS)", "")
 
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
 
-        self.function()
+        self.function(uuid)
 
-    def function(self):
+    def function(self, uuid):
         """runs function from another language"""
 
         path = main_config["lib_path"].split("/")[0]
 
-        if sushicache.LAST_EXECUTED_CODE == self.temp_file:
-            system(f"./{path}/out")
-            return
+        # if sushicache.LAST_EXECUTED_CODE == self.temp_file:
+        #     system(f"./{path}/out")
+        #     return TODO
 
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
@@ -126,8 +145,7 @@ class Execute:
             f'LAST_EXECUTED_CODE = """{TEMP_FILE}"""',
         )
 
+        print(uuid)
         # remove temp file
-        remove(f"{path}/temp.{temp_extension}")
-        subprocess.call([f"./{path}/out"], shell=False)
-
-        return
+        # remove(f"{path}/temp.{temp_extension}")
+        subprocess.call([f"./{path}/out", uuid], shell=False)
