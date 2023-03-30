@@ -14,9 +14,9 @@ config.read("sushi.conf")
 # pylint: disable=import-error
 if isfile("sushicache.py"):
     import sushicache
+DATA = sushicache.INDEXED_FUNCTIONS
 # pylint: enable=import-error
 
-DATA = sushicache.INDEXED_FUNCTIONS
 
 
 class OneCompile:
