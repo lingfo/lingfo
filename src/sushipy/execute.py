@@ -14,6 +14,7 @@ from os import system
 from os.path import isfile
 
 from .cache.main import Cache
+from .stores import ONE_COMPILE
 from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
@@ -49,8 +50,8 @@ class Execute:
         # modify args to only keep the second argument
         if data.args:
             args_list = data.args.split()
-            if len(args_list) >= 2:
-                args = args_list[1]
+            if len(args_list) >= 1:
+                args = args_list[0]
             else:
                 args = ""
         else:
@@ -81,6 +82,7 @@ class Execute:
         verbose_print(
             f"[bold green]sushi[/bold green]   finding function {call_function}"
         )
+
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
 
@@ -90,22 +92,23 @@ class Execute:
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
-        # if () is in temp file remove it
         self.temp_file = config["temp_file"]["temp_file"]
-        delimiter = "SUSHI_FUNCTION"
+        if ONE_COMPILE:
+            # if () is in temp file remove it
+            delimiter = "SUSHI_FUNCTION"
 
-        index = self.temp_file.find(delimiter)
-        after = self.temp_file[index + len(delimiter) :]
+            index = self.temp_file.find(delimiter)
+            after = self.temp_file[index + len(delimiter) :]
 
-        # TODO: cleanup!
-        after = (
-            after.replace("$SUSHI_ARGS", "")
-            .replace("$SUSHI_SEMICOLON", "")
-            .replace("}", "")
-        )
+            # TODO: cleanup!
+            after = (
+                after.replace("$SUSHI_ARGS", "")
+                .replace("$SUSHI_SEMICOLON", "")
+                .replace("}", "")
+            )
 
-        if after == "()":
-            self.temp_file = self.temp_file.replace("($SUSHI_ARGS)", "")
+            if after == "()":
+                self.temp_file = self.temp_file.replace("($SUSHI_ARGS)", "")
 
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
