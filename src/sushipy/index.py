@@ -24,6 +24,11 @@ if isfile("sushicache.py"):
 config = configparser.ConfigParser()
 config.read("sushi.conf")
 
+try:
+    CUSTOM_TEMP_FILE = sushicache.CUSTOM_TEMP_FILE
+except NameError:
+    CUSTOM_TEMP_FILE = """"""
+
 DATA = []
 
 
@@ -44,7 +49,7 @@ def _open_find(
             f_pattern = re.compile(function_pattern, re.IGNORECASE)
             extract = x.split()
 
-            if f_pattern.match(x) and sushicache.CUSTOM_TEMP_FILE == """""":
+            if f_pattern.match(x) and CUSTOM_TEMP_FILE == """""":
                 # append to data
                 name = extract[1].split("(")[0]
                 data = {"type": extract[0], "name": name, "all": extract, "file": file}
@@ -101,7 +106,7 @@ def find():
         )
 
     # if old_cache != DATA:
-    if sushicache.CUSTOM_TEMP_FILE == """""":
+    if CUSTOM_TEMP_FILE == """""":
         save()
 
     return DATA
