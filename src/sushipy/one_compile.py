@@ -6,7 +6,6 @@ from contextlib import suppress
 from os.path import isfile
 
 from .cache.main import Cache
-from .stores import ONE_COMPILE
 
 config = configparser.ConfigParser()
 config.read("sushi.conf")
