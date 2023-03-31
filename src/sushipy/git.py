@@ -66,4 +66,3 @@ class GitTracking:
             return
 
         self._configure_git()
-        data = self._find_changes()
