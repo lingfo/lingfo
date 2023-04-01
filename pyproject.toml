@@ -6,4 +6,6 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-license = "MIT"
+license = { file = "LICENSE" }
+name = "sushipy"
+version = "0.1.6"
