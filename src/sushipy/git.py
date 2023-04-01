@@ -41,7 +41,7 @@ class GitTracking:
 
     def _configure_git(self) -> None:
         with suppress(KeyError):
-            if config.getboolean("main", "safe_mode") is False:
+            if config.getboolean("main", "safe_mode") is True:
                 rich_print(
                     "To continue, sushi needs to execute one shell script. "
                     + "If you agree to continue, press any key. Otherwise press N"
