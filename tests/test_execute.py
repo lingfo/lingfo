@@ -16,7 +16,7 @@ def modify_config():
     config["main"]["safe_mode"] = "no"
 
     # save new config
-    with open("sushi.conf", "w") as f:
+    with open("sushi.conf", "w", encoding="utf-8") as f:
         config.write(f)
 
 
