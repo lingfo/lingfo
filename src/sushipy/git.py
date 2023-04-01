@@ -1,6 +1,7 @@
 """Tracks library change with git"""
 
 import subprocess
+from contextlib import suppress
 from os import chdir, makedirs, name, rename, system
 from os.path import isfile
 from sys import platform
@@ -62,7 +63,8 @@ class GitTracking:
         Cache.update(Cache, "GIT_CONFIGURED = False", "GIT_CONFIGURED = True")
 
     def __init__(self) -> None:
-        if sushicache.GIT_CONFIGURED == True:
-            return
+        with suppress(NameError):
+            if sushicache.GIT_CONFIGURED == True:
+                return
 
         self._configure_git()
