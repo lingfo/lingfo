@@ -1,6 +1,7 @@
 """Tracks library change with git"""
 
 import configparser
+import os
 import subprocess
 import sys
 from contextlib import suppress
@@ -59,8 +60,12 @@ class GitTracking:
         # run script
         if platform in ("linux", "linux2", "darwin"):
             v_print("git_init.sh")
+
+            current_path = os.path.dirname(__file__)
+            path = os.path.abspath(str(current_path) + "/scripts/git_init.sh")
             subprocess.call(
-                ["src/sushipy/scripts/git_init.sh", "lib"],
+                [path, "lib"],
+                stdout=subprocess.DEVNULL,
                 shell=False,
             )
 
