@@ -11,6 +11,7 @@ from rich import print as rich_print
 
 from .cache.main import Cache
 from .config import extends
+from .git import GitTracking
 from .index import find
 from .utils.verbose_print import verbose_print
 
@@ -48,7 +49,7 @@ class Sushi:
     def __init__(self) -> None:
         verbose_print("[bold green]sushi[/bold green]   checking sushi config ")
         # cleaner way to run multiple functions
-        functions = [self._check_config, self._extend_check, Cache]
+        functions = [self._check_config, self._extend_check, Cache, GitTracking]
         for f in functions:
             f()
 

@@ -1,10 +1,23 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring
 
+import configparser
 import os
 import shutil
 import subprocess
 
 import pytest
+
+
+def modify_config():
+    config = configparser.ConfigParser()
+    config.read("sushi.conf")
+
+    # disable safe_mode
+    config["main"]["safe_mode"] = "no"
+
+    # save new config
+    with open("sushi.conf", "w", encoding="utf-8") as f:
+        config.write(f)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -31,6 +44,7 @@ class TestExecute:
     def run_example(self, directory):
         """Helper function to run example app and return the result."""
         os.chdir(directory)
+        modify_config()
 
         result = subprocess.run(
             ["python3", "app.py"], capture_output=True, text=True, check=True
