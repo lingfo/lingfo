@@ -54,3 +54,11 @@ class Sushi:
             f()
 
         find()
+
+
+def main():
+    Sushi()
+
+
+if __name__ == "__main__":
+    Sushi()

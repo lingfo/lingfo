@@ -4,8 +4,3 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
-
-[project]
-license = { file = "LICENSE" }
-name = "sushipy"
-version = "0.1.6"
