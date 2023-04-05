@@ -80,7 +80,7 @@ class ConfigExtends:
         temp_config = configparser.ConfigParser()
         temp_config.read(f"{tempdir}/sushi/{filename}")
 
-        if config.getboolean('main', 'safe_mode') == True:
+        if config.getboolean("main", "safe_mode") is True:
             self._review_config(filename)
 
         # add new config to cache
