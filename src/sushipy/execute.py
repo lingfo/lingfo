@@ -10,7 +10,7 @@ import re
 import shlex
 import subprocess
 from dataclasses import dataclass
-from os import system
+from os import remove, system
 from os.path import isfile
 
 from .cache.main import Cache
@@ -151,5 +151,5 @@ class Execute:
 
         print(uuid)
         # remove temp file
-        # remove(f"{path}/temp.{temp_extension}")
+        remove(f"{path}/temp.{temp_extension}")
         subprocess.call([f"./{path}/out", uuid], shell=False)
