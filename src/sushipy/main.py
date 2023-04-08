@@ -57,6 +57,7 @@ class Sushi:
 
 
 def main():
+    """warning: do not use! Use Sushi() instead"""
     Sushi()
 
 
