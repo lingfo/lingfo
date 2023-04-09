@@ -38,7 +38,7 @@ class GitTracking:
         )
         result = result.stdout.split("\n")
 
-        return result[1] == "nothing to commit, working tree clean"
+        return result[1] != "nothing to commit, working tree clean"
 
     def _configure_git(self) -> None:
         with suppress(KeyError):
