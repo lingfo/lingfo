@@ -72,7 +72,16 @@ class GitTracking:
 
         elif platform == "win32":
             v_print("git_init.ps1")
-            print("windows in progress")
+            print("windows in progress! report any issues on github")
+
+            current_path = os.path.dirname(__file__)
+            path = os.path.abspath(str(current_path) + "/scripts/git_init.ps1")
+            os.system(f"chmod +x {path}")
+            subprocess.call(
+                [path, "lib"],
+                stdout=subprocess.DEVNULL,
+                shell=False,
+            )
 
         Cache.update(Cache, "GIT_CONFIGURED = False", "GIT_CONFIGURED = True")
 
