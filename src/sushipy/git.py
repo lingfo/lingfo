@@ -27,7 +27,10 @@ class GitTracking:
     """git tracking"""
 
     def _find_changes(self) -> None:
-        """returns false if no changes"""
+        """returns False if no changes"""
+
+        if not isfile("sushicache.py"):
+            return False
 
         chdir("lib")
         result = subprocess.run(
