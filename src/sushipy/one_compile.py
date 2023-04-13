@@ -72,4 +72,4 @@ class OneCompile:
             if sushicache.ONE_COMPILE_CONFIGURED is False:
                 self.setup()
         except NameError:
-            self.setup()
+            pass
