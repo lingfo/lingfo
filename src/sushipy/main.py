@@ -63,10 +63,4 @@ class Sushi:
         find()
 
 
-def main():
-    """warning: do not use! Use Sushi() instead"""
-    Sushi()
 
-
-if __name__ == "__main__":
-    Sushi()
