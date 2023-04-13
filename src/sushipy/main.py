@@ -60,11 +60,7 @@ class Sushi:
         for f in functions:
             f()
 
-        if (
-            not isfile("sushicache.py")
-            or GitTracking._find_changes(GitTracking) is True
-        ):
-            find()
+        find()
 
 
 def main():
