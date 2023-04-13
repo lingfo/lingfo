@@ -67,5 +67,7 @@ class OneCompile:
         return data
 
     def __init__(self) -> None:
-        if sushicache.ONE_COMPILE_CONFIGURED is False:
-            self.setup()
+        # TODO: required cleanup and implement other cache system
+        if isfile("sushicache.py"):
+            if sushicache.ONE_COMPILE_CONFIGURED is False:
+                self.setup()

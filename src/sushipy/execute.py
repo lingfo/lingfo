@@ -120,34 +120,40 @@ class Execute:
 
         path = main_config["lib_path"].split("/")[0]
 
-        if sushicache.LAST_EXECUTED_CODE == self.temp_file:
+        if sushicache.LAST_EXECUTED_CODE == self.temp_file and ONE_COMPILE is False:
             system(f"./{path}/out")
             return
 
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
 
-        with open(
-            file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
-        ) as f:
-            f.write(self.temp_file)
-        f.close()
-        # should print the function name for debugging purposes
-        verbose_print("[bold green]sushi[/bold green]   executing function ")
-        subprocess.call(
-            shlex.split(
-                launch_config["exec_command"].replace(
-                    "[file-name]", f"lib/temp.{temp_extension}"
-                )
-            ),
-            shell=False,
-        )
+        def execute_prelaunch():
+            with open(
+                file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
+            ) as f:
+                f.write(self.temp_file)
+            f.close()
 
-        Cache.update(
-            Cache,
-            f"LAST_EXECUTED_CODE = {sushicache.LAST_EXECUTED_CODE}",
-            f'LAST_EXECUTED_CODE = """{TEMP_FILE}"""',
-        )
+            # should print the function name for debugging purposes
+            verbose_print("[bold green]sushi[/bold green]   executing function ")
+            subprocess.call(
+                shlex.split(
+                    launch_config["exec_command"].replace(
+                        "[file-name]", f"lib/temp.{temp_extension}"
+                    )
+                ),
+                shell=False,
+            )
+
+            Cache.update(
+                Cache,
+                f"LAST_EXECUTED_CODE = {sushicache.LAST_EXECUTED_CODE}",
+                f'LAST_EXECUTED_CODE = """{TEMP_FILE}"""',
+            )
+
+        # we should skip it if using one (time) compile
+        if ONE_COMPILE is False:
+            execute_prelaunch()
 
         print(uuid)
         # remove temp file
