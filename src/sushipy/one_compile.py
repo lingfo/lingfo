@@ -67,5 +67,5 @@ class OneCompile:
         return data
 
     def __init__(self) -> None:
-        if sushicache.ONE_COMPILE_CONFIGURED == False:
+        if sushicache.ONE_COMPILE_CONFIGURED is False:
             self.setup()

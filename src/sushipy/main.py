@@ -61,6 +61,3 @@ class Sushi:
             f()
 
         find()
-
-
-
