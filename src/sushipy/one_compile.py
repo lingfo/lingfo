@@ -65,3 +65,7 @@ class OneCompile:
             data = data.replace(i, j)
 
         return data
+
+    def __init__(self) -> None:
+        if sushicache.ONE_COMPILE_CONFIGURED == False:
+            self.setup()

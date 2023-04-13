@@ -13,6 +13,7 @@ from .cache.main import Cache
 from .config import extends
 from .git import GitTracking
 from .index import find
+from .one_compile import OneCompile
 from .utils.verbose_print import verbose_print
 
 config = configparser.ConfigParser()
@@ -49,7 +50,13 @@ class Sushi:
     def __init__(self) -> None:
         verbose_print("[bold green]sushi[/bold green]   checking sushi config ")
         # cleaner way to run multiple functions
-        functions = [self._check_config, self._extend_check, Cache, GitTracking]
+        functions = [
+            self._check_config,
+            self._extend_check,
+            Cache,
+            GitTracking,
+            OneCompile,
+        ]
         for f in functions:
             f()
 
