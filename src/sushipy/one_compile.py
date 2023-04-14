@@ -14,7 +14,6 @@ config.read("sushi.conf")
 if isfile("sushicache.py"):
     import sushicache
 
-    DATA = sushicache.INDEXED_FUNCTIONS
 # pylint: enable=import-error
 
 
@@ -24,16 +23,18 @@ class OneCompile:
     def setup(self) -> None:
         """setup onecompile"""
 
+        cache_data = sushicache.INDEXED_FUNCTIONS
+
         # TODO: cleanup
         if_data = self._extract_if()
-        data = [{"uuid": str(uuid.uuid4()), "name": DATA[0]["name"]}]
+        data = [{"uuid": str(uuid.uuid4()), "name": cache_data[0]["name"]}]
         out = self._parse_if(if_data["if"], data[0]["uuid"], data[0]["name"])
 
-        if len(DATA) > 1:
-            for x in range(len(DATA)):
+        if len(cache_data) > 1:
+            for x in range(len(cache_data)):
                 with suppress(IndexError):
                     out += self._parse_if(
-                        if_data["else"], str(uuid.uuid4()), DATA[x + 1]["name"]
+                        if_data["else"], str(uuid.uuid4()), cache_data[x + 1]["name"]
                     )
 
         Cache.update(
@@ -72,4 +73,4 @@ class OneCompile:
             if sushicache.ONE_COMPILE_CONFIGURED is False:
                 self.setup()
         except NameError:
-            pass
+            return
