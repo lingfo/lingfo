@@ -33,6 +33,10 @@ class Sushi:
         if not path.isfile("sushi.conf"):
             rich_print("[bold red]sushi[/bold red]   configuration file doesnt exists")
             sys.exit(1)
+        elif config.getboolean("main", "safe_mode") is False:
+            verbose_print(
+                "[bold yellow]sushi[/bold yellow]   running with safe_mode turned off!"
+            )
 
     def _extend_check(self) -> None:
         # check if configs needs to be extended
@@ -49,6 +53,7 @@ class Sushi:
 
     def __init__(self) -> None:
         verbose_print("[bold green]sushi[/bold green]   checking sushi config ")
+
         # cleaner way to run multiple functions
         functions = [
             self._check_config,

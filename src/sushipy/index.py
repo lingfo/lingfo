@@ -85,7 +85,6 @@ def find():
     if MULTIPLE_FILES:
         # get all files
         lib_path = path.relpath(files.replace("*", ""))
-
         all_files = listdir(lib_path)
 
         with suppress(ValueError):

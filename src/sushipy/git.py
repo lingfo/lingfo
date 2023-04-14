@@ -79,7 +79,6 @@ class GitTracking:
 
             current_path = os.path.dirname(__file__)
             path = os.path.abspath(str(current_path) + "/scripts/git_init.ps1")
-            os.system(f"chmod +x {path}")
             subprocess.call(
                 [path, "lib"],
                 stdout=subprocess.DEVNULL,
