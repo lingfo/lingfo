@@ -1,3 +1,7 @@
+"""
+auto detect using tree-sitter
+"""
+
 import os
 from os.path import isfile
 
@@ -17,6 +21,8 @@ class TSDetect:
     """detect using TreeSitter"""
 
     def setup(self, file_path, language):
+        """setup tree sitter"""
+
         rich_print(
             "[bold green]sushi[/bold green]    configuring tree-sitter for your language"
         )
@@ -43,14 +49,14 @@ class TSDetect:
         file_path = f".sushi/tree-sitter-{language}/"
 
         # setup tree sitter
-        if sushicache.TREE_SITTER_CONFIGURED == False:
+        if sushicache.TREE_SITTER_CONFIGURED is False:
             self.setup(file_path, language)
 
-        CPP_LANGUAGE = Language(file_path + f"build/{language}.so", "cpp")
+        tree_lang = Language(file_path + f"build/{language}.so", language)
 
         # create new parser
         parser = Parser()
-        parser.set_language(CPP_LANGUAGE)
+        parser.set_language(tree_lang)
 
         self.tree = parser.parse(
             bytes(
@@ -68,6 +74,8 @@ class TSDetect:
         self.parse_tree()
 
     def parse_tree(self):
+        """parse tree"""
+
         tree = self.tree
 
         for node in tree.root_node.children:
