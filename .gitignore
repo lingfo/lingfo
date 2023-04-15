@@ -11,3 +11,4 @@ src/sushipy.egg-info/*
 dist/*
 .vscode/*
 .venv/*
+.sushi/*

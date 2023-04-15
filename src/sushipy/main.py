@@ -56,9 +56,9 @@ class Sushi:
 
         # cleaner way to run multiple functions
         functions = [
+            Cache,
             self._check_config,
             self._extend_check,
-            Cache,
             GitTracking,
             OneCompile,
         ]
