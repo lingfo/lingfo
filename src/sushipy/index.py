@@ -13,44 +13,83 @@ from .stores import MULTIPLE_FILES, ONE_COMPILE
 from .utils.find_dict import find as find_dict
 from .utils.verbose_print import verbose_print
 
+# pylint: disable=import-error
+if isfile("sushicache.py"):
+    import sushicache
+# pylint: enable=import-error
+
 config = configparser.ConfigParser()
 config.read("sushi.conf")
 
 DATA = []
 
+try:
+    CUSTOM_TEMP_FILE = sushicache.CUSTOM_TEMP_FILE
+except NameError:
+    CUSTOM_TEMP_FILE = """"""
+
+
+def _open_find(file):
+    """finds all functions by using regex from sushi.conf"""
+    verbose_print(
+        f"[bold green]sushi[/bold green]   finding functions in {file} from sushi.conf"
+    )
+
+    with open(file=file, mode="r", encoding="UTF-8") as f:
+        lines = f.read()
+
+        detect = TSDetect(
+            "cpp",
+            lines,
+        )
+        tree = detect.parse_tree().decode("utf-8")
+        function_name = tree.split("(")[0]
+
+        function_args = tree.split("(")[1].replace(")", "")
+        function_args = function_args.split(" ")[1]
+
+        data = {"name": function_name, "arg": function_args, "file": "lib/another.hpp"}
+
+        if ONE_COMPILE:
+            oc_data = OneCompile().setup()
+            for x in oc_data:
+                if x["name"] == function_name:
+                    data.__setitem__("uuid", x["uuid"])
+        data.__setitem__("uuid", "")
+
+        DATA.append(data)
+
 
 def find():
-    detect = TSDetect(
-        "cpp",
-        """
-    #include <iostream>
+    files = config["main"]["lib_path"]
 
-    void helloWorld(std::string hello) {
-        std::cout << "hello world\n";
-    }
+    if MULTIPLE_FILES:
+        # get all files
+        lib_path = path.relpath(files.replace("*", ""))
+        all_files = listdir(lib_path)
 
-    void abc(std::string hello) {
-        std::cout << "hello world\n";
-    }
-    """,
-    )
-    tree = detect.parse_tree().decode("utf-8")
-    function_name = tree.split("(")[0]
+        with suppress(ValueError):
+            all_files.remove("out")
 
-    function_args = tree.split("(")[1].replace(")", "")
-    function_args = function_args.split(" ")[1]
+        for x in all_files:
+            _open_find(lib_path + "/" + x)
+    else:
+        _open_find(files)
 
-    data = {"name": function_name, "arg": function_args, "file": "lib/another.hpp"}
+    # save indexed functions to cache so we dont have to re-index every launch
+    with suppress(NameError):
+        verbose_print("[bold green]sushi[/bold green]   updating cache")
+        Cache.update(
+            Cache,
+            f"INDEXED_FUNCTIONS = {sushicache.INDEXED_FUNCTIONS}",
+            f"INDEXED_FUNCTIONS = {DATA}",
+        )
 
-    if ONE_COMPILE:
-        oc_data = OneCompile().setup()
-        for x in oc_data:
-            if x["name"] == function_name:
-                data.__setitem__("uuid", x["uuid"])
-    data.__setitem__("uuid", "")
+    # if old_cache != DATA:
+    if CUSTOM_TEMP_FILE == """""":
+        save()
 
-    DATA.append(data)
-    save()
+    return DATA
 
 
 def save():

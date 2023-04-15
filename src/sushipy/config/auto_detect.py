@@ -72,10 +72,12 @@ class TSDetect:
         """parse tree"""
 
         tree = self.tree
+        output = []
 
         for node in tree.root_node.children:
             # grab all functions
             if node.type == "function_definition":
                 extract = node.children[1]
-                print(extract.text)
-                return extract.text
+                output.append(extract.text)
+
+        return output[0]
