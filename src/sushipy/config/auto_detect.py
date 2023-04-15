@@ -2,7 +2,6 @@
 auto detect using tree-sitter
 """
 
-import configparser
 import os
 from os.path import isfile
 
@@ -80,4 +79,4 @@ class TSDetect:
                 extract = node.children[1]
                 output.append(extract.text)
 
-        return output[0]
+        return output

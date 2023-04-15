@@ -1,5 +1,8 @@
+"""
+Gets all functions from another language using tree-sitter
+"""
+
 import configparser
-import re
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
@@ -10,7 +13,6 @@ from .cache.main import Cache
 from .config.auto_detect import TSDetect
 from .one_compile import OneCompile
 from .stores import MULTIPLE_FILES, ONE_COMPILE
-from .utils.find_dict import find as find_dict
 from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
@@ -42,25 +44,35 @@ def _open_find(file):
             "cpp",
             lines,
         )
-        tree = detect.parse_tree().decode("utf-8")
-        function_name = tree.split("(")[0]
 
-        function_args = tree.split("(")[1].replace(")", "")
-        function_args = function_args.split(" ")[1]
+        for x in detect.parse_tree():
+            tree = x.decode("utf-8")
+            function_name = tree.split("(")[0]
 
-        data = {"name": function_name, "arg": function_args, "file": "lib/another.hpp"}
+            function_args = tree.split("(")[1].replace(")", "")
+            function_args = function_args.split(" ")[1]
 
-        if ONE_COMPILE:
-            oc_data = OneCompile().setup()
-            for x in oc_data:
-                if x["name"] == function_name:
-                    data.__setitem__("uuid", x["uuid"])
-        data.__setitem__("uuid", "")
+            data = {
+                "name": function_name,
+                "arg": function_args,
+                "file": "lib/another.hpp",
+            }
 
-        DATA.append(data)
+            # pylint: disable=unnecessary-dunder-call
+            if ONE_COMPILE:
+                oc_data = OneCompile().setup()
+                for x in oc_data:
+                    if x["name"] == function_name:
+                        data.__setitem__("uuid", x["uuid"])
+            data.__setitem__("uuid", "")
+            # pylint: enable=unnecessary-dunder-call
+
+            DATA.append(data)
 
 
 def find():
+    """finds functions"""
+
     files = config["main"]["lib_path"]
 
     if MULTIPLE_FILES:
