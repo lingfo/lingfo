@@ -48,8 +48,11 @@ class TSDetect:
     def __init__(self, language: str, content: str) -> None:
         file_path = f".sushi/tree-sitter-{language}/"
 
-        # setup tree sitter
-        if sushicache.TREE_SITTER_CONFIGURED is False:
+        try:
+            # setup tree sitter
+            if sushicache.TREE_SITTER_CONFIGURED is False:
+                self.setup(file_path, language)
+        except NameError:
             self.setup(file_path, language)
 
         tree_lang = Language(file_path + f"build/{language}.so", language)
