@@ -3,6 +3,7 @@ auto detect using tree-sitter
 """
 
 import os
+import pprint
 from os.path import isfile
 
 from git import Repo
@@ -63,7 +64,7 @@ class TSDetect:
                 """
             #include <iostream>
 
-            void helloWorld() {
+            void helloWorld(std::string hello) {
                 std::cout << "hello world\n";
             }
             """,
@@ -79,4 +80,7 @@ class TSDetect:
         tree = self.tree
 
         for node in tree.root_node.children:
-            print(node.type)
+            # grab all functions
+            if node.type == "function_definition":
+                extract = node.children[1]
+                print(extract.text)
