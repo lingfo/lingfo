@@ -2,8 +2,8 @@
 auto detect using tree-sitter
 """
 
+import configparser
 import os
-import pprint
 from os.path import isfile
 
 from git import Repo
@@ -46,7 +46,7 @@ class TSDetect:
             Cache, "TREE_SITTER_CONFIGURED = False", "TREE_SITTER_CONFIGURED = True"
         )
 
-    def __init__(self, language: str) -> None:
+    def __init__(self, language: str, content: str) -> None:
         file_path = f".sushi/tree-sitter-{language}/"
 
         # setup tree sitter
@@ -61,13 +61,7 @@ class TSDetect:
 
         self.tree = parser.parse(
             bytes(
-                """
-            #include <iostream>
-
-            void helloWorld(std::string hello) {
-                std::cout << "hello world\n";
-            }
-            """,
+                content,
                 "utf8",
             )
         )
@@ -84,3 +78,4 @@ class TSDetect:
             if node.type == "function_definition":
                 extract = node.children[1]
                 print(extract.text)
+                return extract.text
