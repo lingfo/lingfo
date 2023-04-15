@@ -58,7 +58,7 @@ def _open_find(file):
             data = {
                 "name": function_name,
                 "arg": function_args,
-                "file": "lib/another.hpp",
+                "file": file,
             }
 
             # pylint: disable=unnecessary-dunder-call
