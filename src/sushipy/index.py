@@ -50,7 +50,10 @@ def _open_find(file):
             function_name = tree.split("(")[0]
 
             function_args = tree.split("(")[1].replace(")", "")
-            function_args = function_args.split(" ")[1]
+            print(function_args)
+            with suppress(IndexError):
+                function_args = function_args.split(" ")[1]
+            print(function_args)
 
             data = {
                 "name": function_name,
