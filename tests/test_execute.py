@@ -58,8 +58,8 @@ class TestExecute:
 
     def test_noarg(self):
         result = self.run_example("noarg-temp/")
-        assert result[2] == "Hello from sushi!"
+        assert result[3] == "Hello from sushi!"
 
     def test_arg(self):
         result = self.run_example("arg-temp/")
-        assert result[2] == "You provided 1"
+        assert result[3] == "You provided 1"
