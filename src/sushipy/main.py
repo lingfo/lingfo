@@ -60,7 +60,6 @@ class Sushi:
             self._check_config,
             self._extend_check,
             GitTracking,
-            OneCompile,
         ]
         for f in functions:
             f()
