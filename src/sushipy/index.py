@@ -32,10 +32,8 @@ except NameError:
 
 
 def _open_find(file):
-    """finds all functions by using regex from sushi.conf"""
-    verbose_print(
-        f"[bold green]sushi[/bold green]   finding functions in {file} from sushi.conf"
-    )
+    """finds all functions"""
+    verbose_print(f"[bold green]sushi[/bold green]   finding functions in {file}")
 
     with open(file=file, mode="r", encoding="UTF-8") as f:
         lines = f.read()
