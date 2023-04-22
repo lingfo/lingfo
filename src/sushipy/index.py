@@ -58,7 +58,7 @@ def _open_find(file):
             }
 
             # pylint: disable=unnecessary-dunder-call
-            if ONE_COMPILE:
+            if ONE_COMPILE and sushicache.INDEXED_FUNCTIONS is not None:
                 oc_data = OneCompile().setup()
                 for x in oc_data:
                     if x["name"] == function_name:

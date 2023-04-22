@@ -54,6 +54,9 @@ class Sushi:
                 obj.install()
 
     def _setup_templates(self) -> None:
+        if config.getboolean("main", "use_templates") is False:
+            return
+
         lang = config["main"]["lang"]
 
         # as for current knowledge, only C++/C uses hpp/h as library file extension
