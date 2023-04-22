@@ -3,10 +3,13 @@ sushi
 """
 
 import configparser
+import os
+import shutil
 import sys
 from os import path
 from os.path import isfile
 
+from git import Repo
 from rich import print as rich_print
 
 from .cache.main import Cache
@@ -49,6 +52,46 @@ class Sushi:
             if sushicache.EXTENDS_CONFIG is None:
                 obj = extends.ConfigExtends()
                 obj.install()
+
+    def _setup_templates(self) -> None:
+        lang = config["main"]["lang"]
+
+        # as for current knowledge, only C++/C uses hpp/h as library file extension
+        # so we will only convert that TODO: check if there are more languages
+
+        if lang == "hpp" or lang == "h":
+            lang = "cpp"
+
+        if not os.path.exists(".sushi"):
+            os.makedirs(".sushi")
+
+        # setup sushi templates
+        verbose_print("[bold green]sushi[/bold green]   cloning sushi templates")
+        Repo.clone_from(
+            "https://github.com/dev-sushi/language-templates", ".sushi/template-temp/"
+        )
+
+        # get template for only user specified language
+        shutil.copytree(f".sushi/template-temp/{lang}", f".sushi/template-{lang}")
+
+        with open(
+            f".sushi/template-{lang}/if-statement.txt", "r"
+        ) as if_statement, open(f".sushi/template-{lang}/temp-file.txt", "r") as temp:
+            new_if = if_statement.read().replace("\n", "")
+            new_temp = temp.read().replace("\n", "")
+
+            # save to cache
+            for i in range(2):
+                data_text = "TEMPLATE_IF_STATEMENT" if i == 1 else "TEMPLATE_TEMP_FILE"
+                data_var = new_if if i == 1 else new_temp
+
+                Cache.update(
+                    Cache, f"{data_text} = None", f'{data_text} = """{data_var}"""'
+                )
+
+        verbose_print("[bold green]sushi[/bold green]   cleaning up")
+        shutil.rmtree(".sushi/template-temp")
+        shutil.rmtree(f".sushi/template-{lang}")
 
     def __init__(self) -> None:
         verbose_print("[bold green]sushi[/bold green]   checking sushi config ")
