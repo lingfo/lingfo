@@ -59,7 +59,7 @@ class Sushi:
         # as for current knowledge, only C++/C uses hpp/h as library file extension
         # so we will only convert that TODO: check if there are more languages
 
-        if lang == "hpp" or lang == "h":
+        if lang in ("hpp", "h"):
             lang = "cpp"
 
         if not os.path.exists(".sushi"):
@@ -75,8 +75,10 @@ class Sushi:
         shutil.copytree(f".sushi/template-temp/{lang}", f".sushi/template-{lang}")
 
         with open(
-            f".sushi/template-{lang}/if-statement.txt", "r"
-        ) as if_statement, open(f".sushi/template-{lang}/temp-file.txt", "r") as temp:
+            f".sushi/template-{lang}/if-statement.txt", "r", encoding="utf-8"
+        ) as if_statement, open(
+            f".sushi/template-{lang}/temp-file.txt", "r", encoding="utf-8"
+        ) as temp:
             new_if = if_statement.read().replace("\n", "")
             new_temp = temp.read().replace("\n", "")
 
