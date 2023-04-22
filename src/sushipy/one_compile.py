@@ -58,14 +58,14 @@ class OneCompile:
         return {"if": split_string[0], "else": split_string[1]}
 
     def _parse_if(self, data, uuid_data, code):
-        translate_date = {
+        translate_data = {
             "$SUSHI_ARG_NUM": "1",
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_UUID": uuid_data,
             "$SUSHI_CODE": code,
         }
 
-        for i, j in translate_date.items():
+        for i, j in translate_data.items():
             data = data.replace(i, j)
 
         return data

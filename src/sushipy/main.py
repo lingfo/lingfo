@@ -77,18 +77,29 @@ class Sushi:
         # get template for only user specified language
         shutil.copytree(f".sushi/template-temp/{lang}", f".sushi/template-{lang}")
 
+        # TODO: cleanup required!
         with open(
             f".sushi/template-{lang}/if-statement.txt", "r", encoding="utf-8"
         ) as if_statement, open(
             f".sushi/template-{lang}/temp-file.txt", "r", encoding="utf-8"
-        ) as temp:
+        ) as temp, open(
+            f".sushi/template-{lang}/import-syntax.txt", "r", encoding="utf-8"
+        ) as import_syntax:
             new_if = if_statement.read().replace("\n", "")
             new_temp = temp.read().replace("\n", "")
+            import_syntax = import_syntax.read().replace("\n", "")
 
             # save to cache
-            for i in range(2):
-                data_text = "TEMPLATE_IF_STATEMENT" if i == 1 else "TEMPLATE_TEMP_FILE"
-                data_var = new_if if i == 1 else new_temp
+            for i in range(3):
+                if i == 1:
+                    data_text = "TEMPLATE_IF_STATEMENT"
+                    data_var = new_if
+                elif i == 2:
+                    data_text = "TEMPLATE_TEMP_FILE"
+                    data_var = new_temp
+                else:
+                    data_text = "TEMPLATE_IMPORT_SYNTAX"
+                    data_var = import_syntax
 
                 Cache.update(
                     Cache, f"{data_text} = None", f'{data_text} = """{data_var}"""'

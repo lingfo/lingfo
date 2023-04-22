@@ -85,6 +85,8 @@ class Execute:
 
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
         import_syntax = launch_config["import_syntax"]
+        if config["main"]["use_templates"] is True:
+            import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
 
         file_name = main_config["lib_path"].split("/")[-1]
         if main_config["lib_path"][-1] == "*":
