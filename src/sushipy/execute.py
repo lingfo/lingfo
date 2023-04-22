@@ -92,9 +92,10 @@ class Execute:
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
-        self.temp_file = sushicache.TEMPLATE_TEMP_FILE
-        if config["main"]["use_templates"] is False:
-            self.temp_file = config["temp_file"]["temp_file"]
+        self.temp_file = config["temp_file"]["temp_file"]
+        if config["main"]["use_templates"] is True:
+            self.temp_file = sushicache.TEMPLATE_TEMP_FILE
+
         if ONE_COMPILE:
             # if () is in temp file remove it
             delimiter = "SUSHI_FUNCTION"

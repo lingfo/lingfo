@@ -48,9 +48,9 @@ class OneCompile:
     def _extract_if(self):
         # extracts if statements
 
-        launch = sushicache.TEMPLATE_IF_STATEMENT
-        if config.getboolean("main", "use_templates") is False:
-            launch = config["launch"]["if_statement"]
+        launch = config["launch"]["if_statement"]
+        if config.getboolean("main", "use_templates") is True:
+            launch = sushicache.TEMPLATE_IF_STATEMENT
         else_start = "$SUSHI_ELSE_START"
 
         split_string = launch.split(else_start)
