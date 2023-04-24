@@ -5,6 +5,8 @@ import uuid
 from contextlib import suppress
 from os.path import isfile
 
+from rich import print as rich_print
+
 from .cache.main import Cache
 
 config = configparser.ConfigParser()
@@ -71,6 +73,8 @@ class OneCompile:
         return data
 
     def __init__(self) -> None:
+        rich_print("[bold red]sushi[/bold red]   one compile is still experimental")
+
         # TODO: implement other cache system
         try:
             if sushicache.ONE_COMPILE_CONFIGURED is False:
