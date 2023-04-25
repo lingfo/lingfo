@@ -10,7 +10,7 @@
 
 ---
 
-Sushi is a library that allows you to run functions from other languages without needing to translate the code.
+Sushi is a library that allows you to run functions from other languages to python without needing to translate the code.
 
 ## How it works
 
