@@ -29,7 +29,7 @@ If you would like to contribute, here is a common recommended method:
 
 ## Wiki
 
-The wiki is currently hosted [here](dev-sushi.github.io/docs/).
+The wiki is currently hosted [here](https://dev-sushi.github.io/docs/).
 
 ## License
 
