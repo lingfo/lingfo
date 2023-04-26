@@ -77,9 +77,12 @@ class TSDetect:
         output = []
 
         for node in tree.root_node.children:
-            # grab all functions
+            extract = node.children[1]
+
+            # grab all functions and variables
             if node.type == "function_definition":
-                extract = node.children[1]
                 output.append(extract.text)
+            elif node.type == "declaration" and "=" in str(extract.text):
+                print(extract.text)
 
         return output
