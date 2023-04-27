@@ -81,8 +81,9 @@ class TSDetect:
 
             # grab all functions and variables
             if node.type == "function_definition":
-                output.append(extract.text)
+                output.append({"type": "function", "data": extract.text})
             elif node.type == "declaration" and "=" in str(extract.text):
+                output.append({"type": "variable", "data": extract.text})
                 print(extract.text)
 
         return output

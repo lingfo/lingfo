@@ -44,6 +44,10 @@ def _open_find(file):
         )
 
         for x in detect.parse_tree():
+            if x["type"] != "function":
+                return
+            x = x["data"]
+
             tree = x.decode("utf-8")
             function_name = tree.split("(")[0]
 
