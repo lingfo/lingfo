@@ -44,33 +44,47 @@ def _open_find(file):
         )
 
         for x in detect.parse_tree():
-            if x["type"] != "function":
-                return
-            x = x["data"]
+            data_x = x["data"]
+            tree = data_x.decode("utf-8")
 
-            tree = x.decode("utf-8")
-            function_name = tree.split("(")[0]
+            if x["type"] == "function":
+                function_name = tree.split("(")[0]
 
-            function_args = tree.split("(")[1].replace(")", "")
-            with suppress(IndexError):
-                function_args = function_args.split(" ")[1]
+                function_args = tree.split("(")[1].replace(")", "")
+                with suppress(IndexError):
+                    function_args = function_args.split(" ")[1]
 
-            data = {
-                "name": function_name,
-                "arg": function_args,
-                "file": file,
-            }
+                data = {
+                    "name": function_name,
+                    "arg": function_args,
+                    "file": file,
+                    "type": "function",
+                }
 
-            # pylint: disable=unnecessary-dunder-call
-            if ONE_COMPILE and sushicache.INDEXED_FUNCTIONS is not None:
-                oc_data = OneCompile().setup()
-                for x in oc_data:
-                    if x["name"] == function_name:
-                        data.__setitem__("uuid", x["uuid"])
-            data.__setitem__("uuid", "")
-            # pylint: enable=unnecessary-dunder-call
+                # pylint: disable=unnecessary-dunder-call
+                if ONE_COMPILE and sushicache.INDEXED_FUNCTIONS is not None:
+                    oc_data = OneCompile().setup()
+                    for data_x in oc_data:
+                        if data_x["name"] == function_name:
+                            data.__setitem__("uuid", data_x["uuid"])
+                data.__setitem__("uuid", "")
+                # pylint: enable=unnecessary-dunder-call
 
-            DATA.append(data)
+                DATA.append(data)
+            else:
+                # extract variable
+                split = tree.split("=")
+                name = split[0]
+                variable_data = split[1]
+
+                DATA.append(
+                    {
+                        "type": "variable",
+                        "name": name,
+                        "variable_data": variable_data,
+                        "file": file,
+                    }
+                )
 
 
 def find():
@@ -140,10 +154,15 @@ def save():
 
             fname = x["name"]
 
-            f.write(
-                f"def {fname}({x['arg']}):\tExecute('{file_data_old}', '{x['uuid']}', {x['arg']})\n"
-            )
+            if x["type"] == "function":
+                f.write(
+                    f"def {fname}({x['arg']}):\tExecute('{file_data_old}', '{x['uuid']}', {x['arg']})\n"
+                )
+            else:
+                variable_name = x["name"]
+                variable_data = x["variable_data"]
 
+                f.write(f"{variable_name} = {variable_data}")
         f.close()
 
         rich_print(
