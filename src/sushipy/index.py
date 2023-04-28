@@ -156,7 +156,8 @@ def save():
 
             if x["type"] == "function":
                 f.write(
-                    f"def {fname}({x['arg']}):\tExecute('{file_data_old}', '{x['uuid']}', {x['arg']})\n"
+                    f"def {fname}({x['arg']}):\tExecute('{file_data_old}', \
+                        '{x['uuid']}', {x['arg']})\n"
                 )
             else:
                 variable_name = x["name"]
