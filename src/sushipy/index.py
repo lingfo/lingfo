@@ -163,7 +163,7 @@ def save():
                 variable_name = x["name"]
                 variable_data = x["variable_data"]
 
-                f.write(f"{variable_name} = {variable_data}")
+                f.write(f"{variable_name} = {variable_data}\n")
         f.close()
 
         rich_print(
