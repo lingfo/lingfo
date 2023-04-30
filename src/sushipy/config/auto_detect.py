@@ -2,6 +2,7 @@
 auto detect using tree-sitter
 """
 
+from contextlib import suppress
 import os
 from os.path import isfile
 
@@ -77,12 +78,12 @@ class TSDetect:
         output = []
 
         for node in tree.root_node.children:
-            extract = node.children[1]
+            with suppress(IndexError):
+                extract = node.children[1]
 
-            # grab all functions and variables
-            if node.type == "function_definition":
-                output.append({"type": "function", "data": extract.text})
-            elif node.type == "declaration" and "=" in str(extract.text):
-                output.append({"type": "variable", "data": extract.text})
-
+                # grab all functions and variables
+                if node.type == "function_definition":
+                    output.append({"type": "function", "data": extract.text})
+                elif node.type == "declaration" and "=" in str(extract.text):
+                    output.append({"type": "variable", "data": extract.text})
         return output
