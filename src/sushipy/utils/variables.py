@@ -7,6 +7,8 @@ from .verbose_print import verbose_print
 
 
 class SushiVariable:
+    """sushi variable"""
+
     def update(self, new_data: str):
         """updates variable"""
 
@@ -34,9 +36,13 @@ class SushiVariable:
             )
 
             return ""
+        return ""
 
-    def __init__(self, variable_name) -> None:
+    def __init__(self, variable_name, base_data) -> None:
         self.variable_name = variable_name
+
+        if base_data != "":
+            self.update(base_data)
 
     def __del__(self):
         # remove sushi var data
