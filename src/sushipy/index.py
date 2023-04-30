@@ -138,11 +138,14 @@ def save():
         try:
             if config.getboolean("index", "dev"):
                 f.write("from src.sushipy.execute import Execute\n")
+                f.write("from src.sushipy.utils.variables import SushiVariable\n")
             else:
                 f.write("from sushipy.execute import Execute\n")
+                f.write("from sushipy.utils.variables import SushiVariable\n")
 
         except configparser.NoOptionError:
             f.write("from sushipy.execute import Execute\n")
+            f.write("from sushipy.utils.variables import SushiVariable\n")
 
         # Write each function to our created file
         # pylint: disable=line-too-long
@@ -160,10 +163,12 @@ def save():
                         '{x['uuid']}', {x['arg']})\n"
                 )
             else:
-                variable_name = x["name"]
+                variable_name = x["name"].replace(" ", "")
                 variable_data = x["variable_data"]
 
-                f.write(f"{variable_name} = {variable_data}\n")
+                f.write(
+                    f"{variable_name} = SushiVariable('{variable_name}', {variable_data})\n"
+                )
         f.close()
 
         rich_print(
