@@ -115,7 +115,7 @@ def find():
         )
 
     # if old_cache != DATA:
-    if CUSTOM_TEMP_FILE == """""":
+    if CUSTOM_TEMP_FILE == """""" and config.getboolean('index', 'dev') is False:
         save()
 
     return DATA
