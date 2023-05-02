@@ -2,6 +2,7 @@
 auto detect using tree-sitter
 """
 
+import configparser
 from contextlib import suppress
 import os
 from os.path import isfile
@@ -16,6 +17,36 @@ from ..cache.main import Cache
 if isfile("sushicache.py"):
     import sushicache
 # pylint: enable=import-error
+
+config = configparser.ConfigParser()
+config.read("sushi.conf")
+
+
+class EditVariable:
+    """edit variable"""
+
+    def extract_arg(self):
+        """extract get argument stuff that is used for
+        if statements one time compile"""
+
+        # get if statement
+        if config.getboolean("main", "use_templates") == True:
+            if_statement = sushicache.TEMPLATE_IF_STATEMENT
+        else:
+            if_statement = config["launch"]["if_statement"]
+        if_statement = if_statement.split("$SUSHI_ARG_NUM")
+
+        # remove text from if statement so we will get only argument call
+        first = if_statement[0].replace("if", "")
+        second = if_statement[1].split("==")[0]
+
+        if "(" in first:
+            first = first.replace("(", "")
+
+        # connect two parts TODO: is every language using array for that?
+        if_statement = first + str(0) + second
+
+        return if_statement
 
 
 class TSDetect:
@@ -92,6 +123,8 @@ class TSDetect:
                 if node.type == "function_definition":
                     output.append({"type": "function", "data": extract.text})
                 elif node.type == "declaration" and "=" in str(extract.text):
-                    print(lines)
                     output.append({"type": "variable", "data": extract.text})
+
+                e = EditVariable()
+                e.extract_arg()
         return output
