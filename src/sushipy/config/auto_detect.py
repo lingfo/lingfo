@@ -81,9 +81,15 @@ class TSDetect:
             with suppress(IndexError):
                 extract = node.children[1]
 
+                # get on what line it is indexing
+                lines = str(extract.end_point)
+                lines = lines.replace("(", "").replace(")", "").split(",")[0]
+                lines = int(lines) + 1
+
                 # grab all functions and variables
                 if node.type == "function_definition":
                     output.append({"type": "function", "data": extract.text})
                 elif node.type == "declaration" and "=" in str(extract.text):
+                    print(lines)
                     output.append({"type": "variable", "data": extract.text})
         return output
