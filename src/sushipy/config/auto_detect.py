@@ -83,7 +83,9 @@ class TSDetect:
 
                 # get on what line it is indexing
                 lines = str(extract.end_point)
-                lines = lines.replace("(", "").replace(")", "").split(",")[0]
+                lines = (
+                    lines.replace("(", "").replace(")", "").split(",", maxsplit=1)[0]
+                )
                 lines = int(lines) + 1
 
                 # grab all functions and variables
