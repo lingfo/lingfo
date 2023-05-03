@@ -45,11 +45,11 @@ class MultipleExecute:
     def __init__(self) -> None:
         self.state_name = "default"
 
-    def set_name(self, name):
-        """sets name for current 'state'. This is optional but might be useful when
-        dealing with functions saved for later"""
+    # def set_name(self, name: str):
+    #     """sets name for current 'state'. This is optional but might be useful when
+    #     dealing with functions saved for later"""
 
-        self.state_name = name
+    #     self.state_name = name
 
     def save(self, function_name: str, function_path: str, function_arguments: any):
         """saves function to launch it later"""
@@ -60,10 +60,18 @@ class MultipleExecute:
             # PATH:NAME:ARGUMENTS
             f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
 
-    def launch(self):
-        """manual launch"""
+    # def launch(self, name: str):
+    #     """manual launch"""
 
-        print("todo")
+    #     # get all functions for selected state
+    #     with open(
+    #         f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
+    #     ) as f:
+    #         data = f.readlines()
+
+    # generate new temp file
+
+    # def __exit__(self, *args):
 
 
 class Execute:
@@ -109,19 +117,20 @@ class Execute:
         )
 
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
-        import_syntax = launch_config["import_syntax"]
-        if config["main"]["use_templates"] is True:
+        if config.getboolean("main", "use_templates") is True:
             import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
-
+        else:
+            import_syntax = launch_config["import_syntax"]
         file_name = main_config["lib_path"].split("/")[-1]
         if main_config["lib_path"][-1] == "*":
             # user selected multiple files
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
-        self.temp_file = config["temp_file"]["temp_file"]
-        if config["main"]["use_templates"] is True:
+        if config.getboolean("main", "use_templates") is True:
             self.temp_file = sushicache.TEMPLATE_TEMP_FILE
+        else:
+            self.temp_file = config["temp_file"]["temp_file"]
 
         if ONE_COMPILE:
             # if () is in temp file remove it
@@ -143,7 +152,11 @@ class Execute:
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
 
-        self.function(uuid)
+        if config.getboolean("launch", "multiple_functions") is True:
+            multiple_execute = MultipleExecute()
+            multiple_execute.save(call_function, file, self.init_args)
+        else:
+            self.function(uuid)
 
     def function(self, uuid):
         """runs function from another language"""
