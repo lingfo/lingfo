@@ -42,18 +42,28 @@ class TranslateData:
 
 
 class MultipleExecute:
+    def __init__(self) -> None:
+        self.state_name = "default"
+
+    def set_name(self, name):
+        """sets name for current 'state'. This is optional but might be useful when
+        dealing with functions saved for later"""
+
+        self.state_name = name
+
     def save(self, function_name: str, function_path: str, function_arguments: any):
         """saves function to launch it later"""
 
-        with open(".sushi/multiple-execute.txt", "a", encoding="UTF-8") as f:
+        with open(
+            f".sushi/multiple-execute-{self.state_name}.txt", "a", encoding="UTF-8"
+        ) as f:
             # PATH:NAME:ARGUMENTS
             f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
-        return
 
     def launch(self):
         """manual launch"""
 
-        return
+        print("todo")
 
 
 class Execute:
