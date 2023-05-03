@@ -125,5 +125,5 @@ class TSDetect:
                 elif node.type == "declaration" and "=" in str(extract.text):
                     output.append({"type": "variable", "data": extract.text})
 
-                    edit_variable = EditVariable()
+                    # edit_variable = EditVariable()
         return output

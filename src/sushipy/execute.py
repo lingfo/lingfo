@@ -41,6 +41,21 @@ class TranslateData:
     args: str
 
 
+class MultipleExecute:
+    def save(self, function_name: str, function_path: str, function_arguments: any):
+        """saves function to launch it later"""
+
+        with open(".sushi/multiple-execute.txt", "a", encoding="UTF-8") as f:
+            # PATH:NAME:ARGUMENTS
+            f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
+        return
+
+    def launch(self):
+        """manual launch"""
+
+        return
+
+
 class Execute:
     """executes function"""
 
