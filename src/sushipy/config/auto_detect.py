@@ -30,7 +30,7 @@ class EditVariable:
         if statements one time compile"""
 
         # get if statement
-        if config.getboolean("main", "use_templates") == True:
+        if config.getboolean("main", "use_templates") is True:
             if_statement = sushicache.TEMPLATE_IF_STATEMENT
         else:
             if_statement = config["launch"]["if_statement"]
@@ -117,7 +117,7 @@ class TSDetect:
                 lines = (
                     lines.replace("(", "").replace(")", "").split(",", maxsplit=1)[0]
                 )
-                lines = int(lines) + 1
+                lines = int(lines)
 
                 # grab all functions and variables
                 if node.type == "function_definition":
@@ -125,6 +125,5 @@ class TSDetect:
                 elif node.type == "declaration" and "=" in str(extract.text):
                     output.append({"type": "variable", "data": extract.text})
 
-                e = EditVariable()
-                e.extract_arg()
+                    edit_variable = EditVariable()
         return output
