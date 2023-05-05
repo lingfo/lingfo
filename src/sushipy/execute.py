@@ -41,9 +41,6 @@ class TranslateData:
     args: str
 
 
-USE_MULITPLE_EXECUTE = False
-
-
 class MultipleExecute:
     def __init__(self, name: str = "default") -> None:
         self.state_name = name
@@ -63,29 +60,68 @@ class MultipleExecute:
             # PATH:NAME:ARGUMENTS
             f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
 
-    # def launch(self, name: str):
-    #     """manual launch"""
+    def _open_file(self):
+        f = open(
+            f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
+        )
 
-    #     # get all functions for selected state
-    #     with open(
-    #         f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
-    #     ) as f:
-    #         data = f.readlines()
-
-    # generate new temp file
+        return f
 
     def __enter__(self, *args):
         print("enter")
 
+    def _write_to_file(self, output):
+        # TODO
+        return
+
     def __exit__(self, *args):
-        print("exit")
+        file = self._open_file()
+        lines = file.readlines()
+
+        execute = Execute(None, None, None, use_multiple_execute=True)
+
+        output = []
+        for x in lines:
+            # read from line
+            split = x.split(":")
+
+            file_split = split[0]
+            function = split[1]
+            args = split[2]
+
+            # get import syntax from config (TODO: its already defined somewhere else)
+            if config.getboolean("main", "use_templates") is True:
+                import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
+                temp_file = sushicache.TEMPLATE_TEMP_FILE
+            else:
+                import_syntax = launch_config["import_syntax"]
+                temp_file = config["temp_file"]["temp_file"]
+
+            data = TranslateData(import_syntax, file_split, function, args)
+
+            output.append(
+                execute.translate(
+                    data,
+                    temp_file,
+                    True,
+                )
+            )
+
+            # write output to file
+            self._write_to_file(output)
+
+            # and remove temp file
+
+        file.close()
 
 
 class Execute:
     """executes function"""
 
-    def translate(self, data: TranslateData):
+    def translate(self, data: TranslateData, temp_file="", use_multiple_execute=False):
         """translates string (multiple replace)"""
+
+        self.temp_file = temp_file
 
         # modify args to only keep the second argument
         if data.args:
@@ -97,7 +133,6 @@ class Execute:
         else:
             args = ""
 
-        print(data.call_function)
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
@@ -106,10 +141,18 @@ class Execute:
             "$SUSHI_NEWLINE": "\n",
         }
 
+        # TODO: cleanup
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, file, uuid, *args) -> None:
+        return self.temp_file
+
+    def __init__(self, file, uuid, *args, use_multiple_execute=False) -> None:
+        self.temp_file = ""
+
+        if use_multiple_execute is True:
+            return
+
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
