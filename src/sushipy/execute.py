@@ -67,30 +67,41 @@ class MultipleExecute:
 
         return f
 
-    def _guess_function(self, content):
-        """Tries to guess how to extract only function call from file (or another function).
-        This wont work all of the times, so report any issues on github.
-        """
+    # def _guess_function(self, content):
+    #     """Tries to guess how to extract only function call from file (or another function).
+    #     This wont work all of the times, so report any issues on github.
+    #     """
 
-        # as for current knowledge, no language calls thier function with {}
-        if "{" in content:
-            # probably dealing with compiled language
-            new = content.split("{")[1]
-            new = new.replace("}", "").replace(";", "")
+    #     # as for current knowledge, no language calls thier function with {}
+    #     if "{" in content:
+    #         # probably dealing with compiled language
+    #         new = content.split("{")[1]
+    #         new = new.replace("}", "").replace(";", "")
 
-            return new
-        # TODO: add support for interpreted languages
+    #         return new
+    #     # TODO: add support for interpreted languages
 
-    def __enter__(self, *args):
-        print("enter")
+    def __enter__(self, *args_function):
+        pass
 
-    def __exit__(self, *args):
+    def __exit__(self, *args_function):
         file = self._open_file()
         lines = file.readlines()
 
         execute = Execute(None, None, None, use_multiple_execute=True)
 
-        output = []
+        # get import syntax from config (TODO: its already defined somewhere else)
+        if config.getboolean("main", "use_templates") is True:
+            import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
+            temp_file = sushicache.TEMPLATE_TEMP_FILE
+        else:
+            import_syntax = launch_config["import_syntax"]
+            temp_file = config["temp_file"]["temp_file"]
+
+        functions = ""
+
+        file_split, function, args = "", "", ""
+
         for x in lines:
             # read from line
             split = x.split(":")
@@ -99,30 +110,28 @@ class MultipleExecute:
             function = split[1]
             args = split[2]
 
-            # get import syntax from config (TODO: its already defined somewhere else)
-            if config.getboolean("main", "use_templates") is True:
-                import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
-                temp_file = sushicache.TEMPLATE_TEMP_FILE
+            if args == "" and ")" in temp_file:
+                need_brackets = "();"
+            elif args != "" and ")" in temp_file:
+                need_brackets = f"({args});"
             else:
-                import_syntax = launch_config["import_syntax"]
-                temp_file = config["temp_file"]["temp_file"]
+                need_brackets = ""
 
-            data = TranslateData(import_syntax, file_split, function, args)
+            # TODO: add support for languages without semicolon
 
-            output.append(
-                execute.translate(
-                    data,
-                    temp_file,
-                    True,
-                )
-            )
-
-            self._guess_function("int main() {hello();}")
-
-            # execute it
-            # execute.function("", output=output)
-
+            functions += str(function) + need_brackets
         file.close()
+
+        # translate it
+        data = TranslateData(import_syntax, file_split, functions, "")
+        output = execute.translate(
+            data,
+            temp_file,
+            True,
+        )
+
+        # execute it
+        execute.function("", output=output)
 
         # remove temp file
         remove(f".sushi/multiple-execute-{self.state_name}.txt")
@@ -146,17 +155,27 @@ class Execute:
         else:
             args = ""
 
+        translate_data_temp = {
+            "$SUSHI_ARGS": args,
+        }
+
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
-            "$SUSHI_ARGS": args,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
+            "$SUSHI_ARGS": "",
         }
+
+        if args != "":
+            translate_data = {**translate_data, **translate_data_temp}
 
         # TODO: cleanup
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
+
+        if args == "":
+            self.temp_file = self.temp_file.replace("()", "")
 
         return self.temp_file
 
