@@ -67,12 +67,22 @@ class MultipleExecute:
 
         return f
 
+    def _guess_function(self, content):
+        """Tries to guess how to extract only function call from file (or another function).
+        This wont work all of the times, so report any issues on github.
+        """
+
+        # as for current knowledge, no language calls thier function with {}
+        if "{" in content:
+            # probably dealing with compiled language
+            new = content.split("{")[1]
+            new = new.replace("}", "").replace(";", "")
+
+            return new
+        # TODO: add support for interpreted languages
+
     def __enter__(self, *args):
         print("enter")
-
-    def _write_to_file(self, output):
-        # TODO
-        return
 
     def __exit__(self, *args):
         file = self._open_file()
@@ -107,12 +117,15 @@ class MultipleExecute:
                 )
             )
 
-            # write output to file
-            self._write_to_file(output)
+            self._guess_function("int main() {hello();}")
 
-            # and remove temp file
+            # execute it
+            # execute.function("", output=output)
 
         file.close()
+
+        # remove temp file
+        remove(f".sushi/multiple-execute-{self.state_name}.txt")
 
 
 class Execute:
@@ -209,7 +222,7 @@ class Execute:
         else:
             self.function(uuid)
 
-    def function(self, uuid):
+    def function(self, uuid, output=None):
         """runs function from another language"""
 
         path = main_config["lib_path"].split("/")[0]
@@ -225,7 +238,12 @@ class Execute:
             with open(
                 file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
             ) as f:
-                f.write(self.temp_file)
+                # we can check if multiple execute was used using type check
+                if isinstance(output, list):
+                    for x in output:
+                        f.write(x + "\n")
+                else:
+                    f.write(self.temp_file)
             f.close()
 
             # should print the function name for debugging purposes
