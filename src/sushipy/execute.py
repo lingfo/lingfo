@@ -41,9 +41,12 @@ class TranslateData:
     args: str
 
 
+USE_MULITPLE_EXECUTE = False
+
+
 class MultipleExecute:
-    def __init__(self) -> None:
-        self.state_name = "default"
+    def __init__(self, name: str = "default") -> None:
+        self.state_name = name
 
     # def set_name(self, name: str):
     #     """sets name for current 'state'. This is optional but might be useful when
@@ -71,7 +74,11 @@ class MultipleExecute:
 
     # generate new temp file
 
-    # def __exit__(self, *args):
+    def __enter__(self, *args):
+        print("enter")
+
+    def __exit__(self, *args):
+        print("exit")
 
 
 class Execute:
@@ -90,6 +97,7 @@ class Execute:
         else:
             args = ""
 
+        print(data.call_function)
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
