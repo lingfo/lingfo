@@ -55,9 +55,11 @@ class MultipleExecute:
             f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
 
     def _open_file(self):
+        # pylint: disable=consider-using-with
         f = open(
             f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
         )
+        # pylint: enable=consider-using-with
 
         return f
 
