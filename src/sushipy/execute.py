@@ -45,12 +45,6 @@ class MultipleExecute:
     def __init__(self, name: str = "default") -> None:
         self.state_name = name
 
-    # def set_name(self, name: str):
-    #     """sets name for current 'state'. This is optional but might be useful when
-    #     dealing with functions saved for later"""
-
-    #     self.state_name = name
-
     def save(self, function_name: str, function_path: str, function_arguments: any):
         """saves function to launch it later"""
 
@@ -67,24 +61,10 @@ class MultipleExecute:
 
         return f
 
-    # def _guess_function(self, content):
-    #     """Tries to guess how to extract only function call from file (or another function).
-    #     This wont work all of the times, so report any issues on github.
-    #     """
-
-    #     # as for current knowledge, no language calls thier function with {}
-    #     if "{" in content:
-    #         # probably dealing with compiled language
-    #         new = content.split("{")[1]
-    #         new = new.replace("}", "").replace(";", "")
-
-    #         return new
-    #     # TODO: add support for interpreted languages
-
     def __enter__(self, *args_function):
         pass
 
-    def __exit__(self, *args_function):
+    def launch(self):
         file = self._open_file()
         lines = file.readlines()
 
@@ -135,6 +115,9 @@ class MultipleExecute:
 
         # remove temp file
         remove(f".sushi/multiple-execute-{self.state_name}.txt")
+
+    def __exit__(self, *args_function):
+        self.launch()
 
 
 class Execute:
