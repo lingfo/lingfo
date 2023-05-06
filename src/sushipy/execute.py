@@ -45,16 +45,26 @@ class MultipleExecute:
     def __init__(self, name: str = "default") -> None:
         self.state_name = name
 
-    def save(self, function_name: str, function_path: str, function_arguments: any):
+    def save(
+        self,
+        function_type: str,
+        function_name: str,
+        function_path: str,
+        function_arguments: any,
+    ):
         """saves function to launch it later"""
 
         with open(
             f".sushi/multiple-execute-{self.state_name}.txt", "a", encoding="UTF-8"
         ) as f:
-            # PATH:NAME:ARGUMENTS
-            f.write(f"{function_path}:{function_name}:{str(function_arguments)}\n")
+            # TYPE:PATH:NAME:ARGUMENTS
+            f.write(
+                f"{function_type}:{function_path}:{function_name}:{str(function_arguments)}\n"
+            )
 
     def _open_file(self):
+        """opens file"""
+
         # pylint: disable=consider-using-with
         f = open(
             f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
@@ -67,6 +77,8 @@ class MultipleExecute:
         pass
 
     def launch(self):
+        """launch functions"""
+
         file = self._open_file()
         lines = file.readlines()
 
@@ -88,9 +100,10 @@ class MultipleExecute:
             # read from line
             split = x.split(":")
 
-            file_split = split[0]
-            function = split[1]
-            args = split[2]
+            # function_type = split[0]
+            file_split = split[1]
+            function = split[2]
+            args = split[3]
 
             if args == "" and ")" in temp_file:
                 need_brackets = "();"
@@ -109,7 +122,6 @@ class MultipleExecute:
         output = execute.translate(
             data,
             temp_file,
-            True,
         )
 
         # execute it
@@ -125,7 +137,7 @@ class MultipleExecute:
 class Execute:
     """executes function"""
 
-    def translate(self, data: TranslateData, temp_file="", use_multiple_execute=False):
+    def translate(self, data: TranslateData, temp_file=""):
         """translates string (multiple replace)"""
 
         self.temp_file = temp_file
@@ -222,7 +234,7 @@ class Execute:
 
         if config.getboolean("launch", "multiple_functions") is True:
             multiple_execute = MultipleExecute()
-            multiple_execute.save(call_function, file, self.init_args)
+            multiple_execute.save("function", call_function, file, self.init_args)
         else:
             self.function(uuid)
 
