@@ -9,9 +9,12 @@ import inspect
 import re
 import shlex
 import subprocess
+import sys
+
 from dataclasses import dataclass
 from os import remove, system
 from os.path import isfile
+from rich import print as rich_print
 
 from .cache.main import Cache
 from .stores import ONE_COMPILE
@@ -41,11 +44,112 @@ class TranslateData:
     args: str
 
 
+class MultipleExecute:
+    def __init__(self, name: str = "default") -> None:
+        if config.getboolean("launch", "multiple_functions") is False:
+            rich_print(
+                "[bold red]sushi[/bold red]   running multiple_functions mode when \
+this is turned off in settings! Please turn it back on in sushi.conf before continuing."
+            )
+            sys.exit(1)
+        self.state_name = name
+
+    def save(
+        self,
+        function_type: str,
+        function_name: str,
+        function_path: str,
+        function_arguments: any,
+    ):
+        """saves function to launch it later"""
+
+        with open(
+            f".sushi/multiple-execute-{self.state_name}.txt", "a", encoding="UTF-8"
+        ) as f:
+            # TYPE:PATH:NAME:ARGUMENTS
+            f.write(
+                f"{function_type}:{function_path}:{function_name}:{str(function_arguments)}\n"
+            )
+
+    def _open_file(self):
+        """opens file"""
+
+        # pylint: disable=consider-using-with
+        f = open(
+            f".sushi/multiple-execute-{self.state_name}.txt", "r", encoding="UTF-8"
+        )
+        # pylint: enable=consider-using-with
+
+        return f
+
+    def __enter__(self, *args_function):
+        pass
+
+    def launch(self):
+        """launch functions"""
+
+        file = self._open_file()
+        lines = file.readlines()
+
+        execute = Execute(None, None, None, use_multiple_execute=True)
+
+        # get import syntax from config (TODO: its already defined somewhere else)
+        if config.getboolean("main", "use_templates") is True:
+            import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
+            temp_file = sushicache.TEMPLATE_TEMP_FILE
+        else:
+            import_syntax = launch_config["import_syntax"]
+            temp_file = config["temp_file"]["temp_file"]
+
+        functions = ""
+
+        file_split, function, args = "", "", ""
+
+        for x in lines:
+            # read from line
+            split = x.split(":")
+
+            # function_type = split[0]
+            file_split = split[1]
+            function = split[2]
+            args = split[3]
+
+            if args == "" and ")" in temp_file:
+                need_brackets = "();"
+            elif args != "" and ")" in temp_file:
+                need_brackets = f"({args});"
+            else:
+                need_brackets = ""
+
+            # TODO: add support for languages without semicolon
+
+            functions += str(function) + need_brackets
+        file.close()
+
+        # translate it
+        data = TranslateData(import_syntax, file_split, functions, "")
+        output = execute.translate(
+            data,
+            temp_file,
+        )
+
+        # execute it
+        execute.function("", output=output)
+
+        # remove temp file
+        remove(f".sushi/multiple-execute-{self.state_name}.txt")
+
+    def __exit__(self, *args_function):
+        self.launch()
+
+
 class Execute:
     """executes function"""
 
-    def translate(self, data: TranslateData):
+    def translate(self, data: TranslateData, temp_file=""):
         """translates string (multiple replace)"""
+
+        self.temp_file = temp_file
 
         # modify args to only keep the second argument
         if data.args:
@@ -57,18 +161,36 @@ class Execute:
         else:
             args = ""
 
+        translate_data_temp = {
+            "$SUSHI_ARGS": args,
+        }
+
         translate_data = {
             "$SUSHI_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
             "$SUSHI_FUNCTION": data.call_function,
-            "$SUSHI_ARGS": args,
             "$SUSHI_SEMICOLON": ";",
             "$SUSHI_NEWLINE": "\n",
+            "$SUSHI_ARGS": "",
         }
 
+        if args != "":
+            translate_data = {**translate_data, **translate_data_temp}
+
+        # TODO: cleanup
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
 
-    def __init__(self, file, uuid, *args) -> None:
+        if args == "":
+            self.temp_file = self.temp_file.replace("()", "")
+
+        return self.temp_file
+
+    def __init__(self, file, uuid, *args, use_multiple_execute=False) -> None:
+        self.temp_file = ""
+
+        if use_multiple_execute is True:
+            return
+
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
 
@@ -84,19 +206,20 @@ class Execute:
         )
 
         self.init_args = re.sub("[()]", "", rf"{args}".replace(",", ""))
-        import_syntax = launch_config["import_syntax"]
-        if config["main"]["use_templates"] is True:
+        if config.getboolean("main", "use_templates") is True:
             import_syntax = sushicache.TEMPLATE_IMPORT_SYNTAX
-
+        else:
+            import_syntax = launch_config["import_syntax"]
         file_name = main_config["lib_path"].split("/")[-1]
         if main_config["lib_path"][-1] == "*":
             # user selected multiple files
             file_name = main_config["lib_path"].replace("*", file)
             file_name = file_name.split("/")[-1]
 
-        self.temp_file = config["temp_file"]["temp_file"]
-        if config["main"]["use_templates"] is True:
+        if config.getboolean("main", "use_templates") is True:
             self.temp_file = sushicache.TEMPLATE_TEMP_FILE
+        else:
+            self.temp_file = config["temp_file"]["temp_file"]
 
         if ONE_COMPILE:
             # if () is in temp file remove it
@@ -118,9 +241,13 @@ class Execute:
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
         self.translate(data)
 
-        self.function(uuid)
+        if config.getboolean("launch", "multiple_functions") is True:
+            multiple_execute = MultipleExecute()
+            multiple_execute.save("function", call_function, file, self.init_args)
+        else:
+            self.function(uuid)
 
-    def function(self, uuid):
+    def function(self, uuid, output=None):
         """runs function from another language"""
 
         path = main_config["lib_path"].split("/")[0]
@@ -136,7 +263,12 @@ class Execute:
             with open(
                 file=f"{path}/temp.{temp_extension}", mode="w", encoding="UTF-8"
             ) as f:
-                f.write(self.temp_file)
+                # we can check if multiple execute was used using type check
+                if isinstance(output, list):
+                    for x in output:
+                        f.write(x + "\n")
+                else:
+                    f.write(self.temp_file)
             f.close()
 
             # should print the function name for debugging purposes
