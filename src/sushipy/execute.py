@@ -14,10 +14,11 @@ import sys
 from dataclasses import dataclass
 from os import remove, system
 from os.path import isfile
+from rich import print as rich_print
+
 from .cache.main import Cache
 from .stores import ONE_COMPILE
 from .utils.verbose_print import verbose_print
-from rich import print as rich_print
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
