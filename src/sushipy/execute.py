@@ -9,13 +9,15 @@ import inspect
 import re
 import shlex
 import subprocess
+import sys
+
 from dataclasses import dataclass
 from os import remove, system
 from os.path import isfile
-
 from .cache.main import Cache
 from .stores import ONE_COMPILE
 from .utils.verbose_print import verbose_print
+from rich import print as rich_print
 
 # pylint: disable=import-error
 if isfile("sushicache.py"):
@@ -43,6 +45,12 @@ class TranslateData:
 
 class MultipleExecute:
     def __init__(self, name: str = "default") -> None:
+        if config.getboolean("launch", "multiple_functions") is False:
+            rich_print(
+                "[bold red]sushi[/bold red]   running multiple_functions mode when \
+this is turned off in settings! Please turn it back on in sushi.conf before continuing."
+            )
+            sys.exit(1)
         self.state_name = name
 
     def save(
