@@ -253,9 +253,9 @@ class Execute:
 
         path = main_config["lib_path"].split("/")[0]
 
-        if sushicache.LAST_EXECUTED_CODE == self.temp_file and ONE_COMPILE is False:
-            system(f"./{path}/out")
-            return
+        # if sushicache.LAST_EXECUTED_CODE == self.temp_file and ONE_COMPILE is False:
+        #     system(f"./{path}/out")
+        #     return TODO: fix
 
         # create temporary file
         temp_extension = config["temp_file"]["extension"]
