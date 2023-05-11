@@ -149,7 +149,8 @@ class Execute:
     def translate(self, data: TranslateData, temp_file=""):
         """translates string (multiple replace)"""
 
-        self.temp_file = temp_file
+        if temp_file != "":
+            self.temp_file = temp_file
 
         # modify args to only keep the second argument
         if data.args:
