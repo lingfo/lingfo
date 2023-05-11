@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 from dataclasses import dataclass
-from os import remove, system
+from os import remove
 from os.path import isfile
 from rich import print as rich_print
 
