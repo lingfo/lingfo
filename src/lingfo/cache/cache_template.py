@@ -1,4 +1,4 @@
-"""sushi"""
+"""lingfo"""
 
 INDEXED_FUNCTIONS = None
 EXTENDS_CONFIG = None

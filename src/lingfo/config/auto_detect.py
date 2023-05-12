@@ -14,12 +14,12 @@ from tree_sitter import Language, Parser
 from ..cache.main import Cache
 
 # pylint: disable=import-error
-if isfile("sushicache.py"):
-    import sushicache
+if isfile("lingfocache.py"):
+    import lingfocache
 # pylint: enable=import-error
 
 config = configparser.ConfigParser()
-config.read("sushi.conf")
+config.read("lingfo.conf")
 
 
 class EditVariable:
@@ -31,10 +31,10 @@ class EditVariable:
 
         # get if statement
         if config.getboolean("main", "use_templates") is True:
-            if_statement = sushicache.TEMPLATE_IF_STATEMENT
+            if_statement = lingfocache.TEMPLATE_IF_STATEMENT
         else:
             if_statement = config["launch"]["if_statement"]
-        if_statement = if_statement.split("$SUSHI_ARG_NUM")
+        if_statement = if_statement.split("$LINGFO_ARG_NUM")
 
         # remove text from if statement so we will get only argument call
         first = if_statement[0].replace("if", "")
@@ -56,11 +56,11 @@ class TSDetect:
         """setup tree sitter"""
 
         rich_print(
-            "[bold green]sushi[/bold green]    configuring tree-sitter for your language"
+            "[bold green]lingfo[/bold green]    configuring tree-sitter for your language"
         )
 
-        if not os.path.exists(".sushi"):
-            os.makedirs(".sushi")
+        if not os.path.exists(".lingfo"):
+            os.makedirs(".lingfo")
 
         # first, download parser for selected language
         Repo.clone_from(
@@ -78,11 +78,11 @@ class TSDetect:
         )
 
     def __init__(self, language: str, content: str) -> None:
-        file_path = f".sushi/tree-sitter-{language}/"
+        file_path = f".lingfo/tree-sitter-{language}/"
 
         try:
             # setup tree sitter
-            if sushicache.TREE_SITTER_CONFIGURED is False:
+            if lingfocache.TREE_SITTER_CONFIGURED is False:
                 self.setup(file_path, language)
         except NameError:
             self.setup(file_path, language)

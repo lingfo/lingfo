@@ -1,11 +1,11 @@
 """
-here sushi stores all variables that are used in multiple files
+here lingfo stores all variables that are used in multiple files
 """
 
 import configparser
 
 config = configparser.ConfigParser()
-config.read("sushi.conf")
+config.read("lingfo.conf")
 
 MULTIPLE_FILES = False
 ONE_COMPILE = False

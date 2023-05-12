@@ -7,7 +7,7 @@ from rich import print as rich_print
 # TODO: maybe move to stores.py
 
 config = configparser.ConfigParser()
-config.read("sushi.conf")
+config.read("lingfo.conf")
 
 verbose_flag = config["launch"].getboolean("verbose", fallback=False)
 

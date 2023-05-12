@@ -10,19 +10,19 @@ import pytest
 
 def modify_config():
     config = configparser.ConfigParser()
-    config.read("sushi.conf")
+    config.read("lingfo.conf")
 
     # disable safe_mode
     config["main"]["safe_mode"] = "no"
 
     # save new config
-    with open("sushi.conf", "w", encoding="utf-8") as f:
+    with open("lingfo.conf", "w", encoding="utf-8") as f:
         config.write(f)
 
 
 @pytest.fixture(scope="session", autouse=True)
 def pytest_init():
-    # copy example so we have already built sushi app for testing
+    # copy example so we have already built lingfo app for testing
     noarg_path = os.path.abspath("../examples/cpp")
     arg_path = os.path.abspath("../examples/arg-cpp")
 
@@ -58,7 +58,7 @@ class TestExecute:
 
     def test_noarg(self):
         result = self.run_example("noarg-temp/")
-        assert result[3] == "Hello from sushi!"
+        assert result[3] == "Hello from lingfo!"
 
     def test_arg(self):
         result = self.run_example("arg-temp/")
