@@ -1,20 +1,22 @@
 <p align='center'>
-    <img src="https://user-images.githubusercontent.com/47505116/215187622-ea13d72c-178d-48bb-aba4-1398abf3347d.png" alt="Sushi logo">
+    <img src="https://github.com/lingfo/lingfo/assets/47505116/a31a4afb-953f-466b-b35e-f429ba24349e2" alt="Lingfo logo">
     <br/><br/>
     <img src="https://img.shields.io/pypi/dm/sushipy.svg" alt="Downloads Badge"/>
     <br/>
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=dev-sushi_sushi&metric=security_rating" alt="Sonar security rating"/>
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=dev-sushi_sushi&metric=sqale_rating" alt="Sonar maintainability rating"/>
-    <img src="https://sonarcloud.io/api/project_badges/measure?project=dev-sushi_sushi&metric=reliability_rating" alt="Sonar reliability rating"/>
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=lingfo_lingfo&metric=security_rating" alt="Sonar security rating"/>
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=lingfo_lingfo&metric=sqale_rating" alt="Sonar maintainability rating"/>
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=lingfo_lingfo&metric=reliability_rating" alt="Sonar reliability rating"/>
 </p>
 
 ---
 
-Sushi is a library that allows you to run functions from other languages to python without needing to translate the code.
+*If you are looking for sushi: https://github.com/orgs/lingfo/discussions/36*
+
+Lingfo is a library that allows you to run functions from other languages to python without needing to translate the code.
 
 ## How it works
 
-Sushi compiles or interprets the code to create a runnable file which then can be executed, displaying the output in the terminal. Removing the translation step allows for code to run at its native language speed.
+Lingfo compiles or interprets the code to create a runnable file which then can be executed, displaying the output in the terminal. Removing the translation step allows for code to run at its native language speed.
 
 ## Contributing
 
@@ -29,8 +31,8 @@ If you would like to contribute, here is a common recommended method:
 
 ## Wiki
 
-The wiki is currently hosted [here](https://dev-sushi.github.io/docs/).
+The wiki is currently hosted [here](https://lingfo.github.io/docs/).
 
 ## License
 
-Sushi is licensed under the MIT license.
+Lingfo is licensed under the MIT license.
