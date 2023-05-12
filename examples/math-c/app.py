@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring, unused-import
 import timeit
 
-from lingfopy.main import Lingfo
+from lingfo.main import Lingfo
 
 if __name__ == "__main__":
     Lingfo()

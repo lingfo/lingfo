@@ -7,7 +7,7 @@ out/*
 lingfocache.py
 */__pycache__/*
 __pycache__/*
-src/lingfopy.egg-info/*
+src/lingfo.egg-info/*
 dist/*
 .vscode/*
 .venv/*

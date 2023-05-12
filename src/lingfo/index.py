@@ -137,15 +137,15 @@ def save():
         # TODO: cleanup
         try:
             if config.getboolean("index", "dev"):
-                f.write("from src.lingfopy.execute import Execute\n")
-                f.write("from src.lingfopy.utils.variables import LingfoVariable\n")
+                f.write("from src.lingfo.execute import Execute\n")
+                f.write("from src.lingfo.utils.variables import LingfoVariable\n")
             else:
-                f.write("from lingfopy.execute import Execute\n")
-                f.write("from lingfopy.utils.variables import LingfoVariable\n")
+                f.write("from lingfo.execute import Execute\n")
+                f.write("from lingfo.utils.variables import LingfoVariable\n")
 
         except configparser.NoOptionError:
-            f.write("from lingfopy.execute import Execute\n")
-            f.write("from lingfopy.utils.variables import LingfoVariable\n")
+            f.write("from lingfo.execute import Execute\n")
+            f.write("from lingfo.utils.variables import LingfoVariable\n")
 
         # Write each function to our created file
         # pylint: disable=line-too-long
