@@ -15,12 +15,12 @@ from .cache.main import Cache
 from .utils.verbose_print import verbose_print
 
 # pylint: disable=import-error
-if isfile("sushicache.py"):
-    import sushicache
+if isfile("lingfocache.py"):
+    import lingfocache
 # pylint: enable=import-error
 
 config = configparser.ConfigParser()
-config.read("sushi.conf")
+config.read("lingfo.conf")
 
 
 class GitTracking:
@@ -29,12 +29,12 @@ class GitTracking:
     def _find_changes(self) -> None:
         """returns False if no changes"""
 
-        if not isfile("sushicache.py"):
+        if not isfile("lingfocache.py"):
             return False
 
         chdir("lib")
         result = subprocess.run(
-            ["git", "--git-dir=.sushi-git", "status"],
+            ["git", "--git-dir=.lingfo-git", "status"],
             capture_output=True,
             text=True,
             check=True,
@@ -47,7 +47,7 @@ class GitTracking:
         with suppress(KeyError):
             if config.getboolean("main", "safe_mode") is True:
                 rich_print(
-                    "To continue, sushi needs to execute one shell script. "
+                    "To continue, lingfo needs to execute one shell script. "
                     + "If you agree to continue, press any key. Otherwise press N"
                 )
 
@@ -57,7 +57,7 @@ class GitTracking:
 
         def v_print(script_name: str):
             verbose_print(
-                f"[bold green]sushi[/bold green]   executing script: {script_name}"
+                f"[bold green]lingfo[/bold green]   executing script: {script_name}"
             )
 
         # run script
@@ -89,7 +89,7 @@ class GitTracking:
 
     def __init__(self) -> None:
         with suppress(NameError):
-            if sushicache.GIT_CONFIGURED is True:
+            if lingfocache.GIT_CONFIGURED is True:
                 return
 
         self._configure_git()

@@ -1,13 +1,13 @@
 # pylint: disable=missing-module-docstring, unused-import
 import timeit
 
-from sushipy.main import Sushi
+from lingfopy.main import Lingfo
 
 if __name__ == "__main__":
-    Sushi()
+    Lingfo()
 
-    # sushi generates code for us to call in Python
-    from out.main import itt_add , double_number
+    # lingfo generates code for us to call in Python
+    from out.main import itt_add, double_number
 
     # Time the itt_add() function
     itt_add_time = timeit.timeit(

@@ -10,11 +10,11 @@ from rich import print as rich_print
 from .cache.main import Cache
 
 config = configparser.ConfigParser()
-config.read("sushi.conf")
+config.read("lingfo.conf")
 
 # pylint: disable=import-error
-if isfile("sushicache.py"):
-    import sushicache
+if isfile("lingfocache.py"):
+    import lingfocache
 
 # pylint: enable=import-error
 
@@ -25,7 +25,7 @@ class OneCompile:
     def setup(self) -> None:
         """setup onecompile"""
 
-        cache_data = sushicache.INDEXED_FUNCTIONS
+        cache_data = lingfocache.INDEXED_FUNCTIONS
 
         # TODO: cleanup
         if_data = self._extract_if()
@@ -41,7 +41,7 @@ class OneCompile:
 
         Cache.update(
             Cache,
-            f'CUSTOM_TEMP_FILE = """{sushicache.CUSTOM_TEMP_FILE}"""',
+            f'CUSTOM_TEMP_FILE = """{lingfocache.CUSTOM_TEMP_FILE}"""',
             f'CUSTOM_TEMP_FILE = """{out}"""',
         )
 
@@ -52,8 +52,8 @@ class OneCompile:
 
         launch = config["launch"]["if_statement"]
         if config.getboolean("main", "use_templates") is True:
-            launch = sushicache.TEMPLATE_IF_STATEMENT
-        else_start = "$SUSHI_ELSE_START"
+            launch = lingfocache.TEMPLATE_IF_STATEMENT
+        else_start = "$LINGFO_ELSE_START"
 
         split_string = launch.split(else_start)
 
@@ -61,10 +61,10 @@ class OneCompile:
 
     def _parse_if(self, data, uuid_data, code):
         translate_data = {
-            "$SUSHI_ARG_NUM": "1",
-            "$SUSHI_SEMICOLON": ";",
-            "$SUSHI_UUID": uuid_data,
-            "$SUSHI_CODE": code,
+            "$LINGFO_ARG_NUM": "1",
+            "$LINGFO_SEMICOLON": ";",
+            "$LINGFO_UUID": uuid_data,
+            "$LINGFO_CODE": code,
         }
 
         for i, j in translate_data.items():
@@ -73,11 +73,11 @@ class OneCompile:
         return data
 
     def __init__(self) -> None:
-        rich_print("[bold red]sushi[/bold red]   one compile is still experimental")
+        rich_print("[bold red]lingfo[/bold red]   one compile is still experimental")
 
         # TODO: implement other cache system
         try:
-            if sushicache.ONE_COMPILE_CONFIGURED is False:
+            if lingfocache.ONE_COMPILE_CONFIGURED is False:
                 self.setup()
         except NameError:
             return

@@ -2,5 +2,5 @@
 
 void helloWorld()
 {
-    std::cout << "Hello from sushi!\n";
+    std::cout << "Hello from lingfo!\n";
 }
