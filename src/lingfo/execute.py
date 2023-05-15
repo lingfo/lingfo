@@ -162,7 +162,6 @@ class Execute:
         else:
             args = ""
 
-        print(self.temp_file)
 
         translate_data_temp = {
             "$LINGFO_ARGS": args,
@@ -179,12 +178,8 @@ class Execute:
         if args != "":
             translate_data = {**translate_data, **translate_data_temp}
 
-        # TODO: cleanup
         for i, j in translate_data.items():
             self.temp_file = self.temp_file.replace(i, j)
-
-        if args != "":
-            self.temp_file = self.temp_file.replace("()", "")
 
         return self.temp_file
 
