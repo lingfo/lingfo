@@ -225,7 +225,6 @@ class Execute:
                 self.temp_file = self.temp_file.replace("($LINGFO_ARGS)", "")
 
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
-        
         self.translate(data)
 
         if config.getboolean("launch", "multiple_functions") is True:
