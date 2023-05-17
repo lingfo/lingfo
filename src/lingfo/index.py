@@ -114,9 +114,9 @@ def find():
             f"INDEXED_FUNCTIONS = {DATA}",
         )
 
-    # if old_cache != DATA:
-    if CUSTOM_TEMP_FILE == """""" and config.getboolean("index", "dev") is False:
-        save()
+    # if old_cache != DATA: TODO: Fix
+    # if CUSTOM_TEMP_FILE == """""":
+    save()
 
     return DATA
 

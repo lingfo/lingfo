@@ -114,20 +114,13 @@ this is turned off in settings! Please turn it back on in lingfo.conf before con
             function = split[2]
             args = split[3]
 
-            if args == "" and ")" in temp_file:
-                need_brackets = "();"
-            elif args != "" and ")" in temp_file:
-                need_brackets = f"({args});"
-            else:
-                need_brackets = ""
-
             # TODO: add support for languages without semicolon
 
-            functions += str(function) + need_brackets
+            functions += str(function)
         file.close()
 
         # translate it
-        data = TranslateData(import_syntax, file_split, functions, "")
+        data = TranslateData(import_syntax, file_split, functions, args)
         output = execute.translate(
             data,
             temp_file,
@@ -141,7 +134,6 @@ this is turned off in settings! Please turn it back on in lingfo.conf before con
 
     def __exit__(self, *args_function):
         self.launch()
-
 
 class Execute:
     """executes function"""
@@ -175,22 +167,18 @@ class Execute:
             "$LINGFO_ARGS": "",
         }
 
-        if args != "":
-            translate_data = {**translate_data, **translate_data_temp}
-
-        for i, j in translate_data.items():
+        for i, j in {**translate_data, **translate_data_temp}.items():
             self.temp_file = self.temp_file.replace(i, j)
 
         return self.temp_file
 
     def __init__(self, file, uuid, *args, use_multiple_execute=False) -> None:
         self.temp_file = ""
+        self.init_args = INIT_ARGS
+        self.temp_file = TEMP_FILE
 
         if use_multiple_execute is True:
             return
-
-        self.init_args = INIT_ARGS
-        self.temp_file = TEMP_FILE
 
         # get from what function was this called
         if lingfocache.CUSTOM_TEMP_FILE is None:
@@ -237,6 +225,7 @@ class Execute:
                 self.temp_file = self.temp_file.replace("($LINGFO_ARGS)", "")
 
         data = TranslateData(import_syntax, file_name, call_function, self.init_args)
+        
         self.translate(data)
 
         if config.getboolean("launch", "multiple_functions") is True:
