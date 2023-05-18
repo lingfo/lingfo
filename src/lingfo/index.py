@@ -7,7 +7,7 @@ import configparser
 import os
 
 from contextlib import suppress
-from os import listdir, mkdir, path
+from os import listdir, mkdir
 from os.path import exists, isfile
 
 from rich import print as rich_print
@@ -34,10 +34,12 @@ except NameError:
     CUSTOM_TEMP_FILE = """"""
 
 def open_multiple_files():
+    """open multiple files (including subfolders)"""
+
     output = []
     lib_path = config['main']['lib_path'].split('/')[0]
 
-    for path, subdirs, files in os.walk(lib_path + "/"):
+    for path, _subdirs, files in os.walk(lib_path + "/"):
         for name in files:
             output.append(os.path.join(path, name))
 
@@ -106,7 +108,7 @@ def find():
 
     if MULTIPLE_FILES:
         # get all files
-        lib_path = path.relpath(files.replace("*", ""))
+        lib_path = os.path.relpath(files.replace("*", ""))
         all_files = listdir(lib_path)
 
         with suppress(ValueError):
@@ -139,7 +141,7 @@ def save():
     if not exists("out"):
         mkdir("out")
 
-    print(open_multiple_files())
+    # print(open_multiple_files())
 
     # create new file
     file_data_old = DATA[0]["file"].split("/")[-1]
