@@ -108,14 +108,14 @@ def find():
 
     if MULTIPLE_FILES:
         # get all files
-        lib_path = os.path.relpath(files.replace("*", ""))
-        all_files = listdir(lib_path)
+        files = open_multiple_files()
+        lib_path = config['main']['lib_path'].split('/')[0]
 
         with suppress(ValueError):
-            all_files.remove("out")
+            files.remove(f"{lib_path}/out")
 
-        for x in all_files:
-            _open_find(lib_path + "/" + x)
+        for x in files:
+            _open_find(x)
     else:
         _open_find(files)
 
@@ -141,7 +141,6 @@ def save():
     if not exists("out"):
         mkdir("out")
 
-    # print(open_multiple_files())
 
     # create new file
     file_data_old = DATA[0]["file"].split("/")[-1]
