@@ -2,7 +2,10 @@
 Gets all functions from another language using tree-sitter
 """
 
+# TODO: clean imports
 import configparser
+import os
+
 from contextlib import suppress
 from os import listdir, mkdir, path
 from os.path import exists, isfile
@@ -30,6 +33,15 @@ try:
 except NameError:
     CUSTOM_TEMP_FILE = """"""
 
+def open_multiple_files():
+    output = []
+    lib_path = config['main']['lib_path'].split('/')[0]
+
+    for path, subdirs, files in os.walk(lib_path + "/"):
+        for name in files:
+            output.append(os.path.join(path, name))
+
+    return output
 
 def _open_find(file):
     """finds all functions"""
@@ -126,6 +138,8 @@ def save():
 
     if not exists("out"):
         mkdir("out")
+
+    print(open_multiple_files())
 
     # create new file
     file_data_old = DATA[0]["file"].split("/")[-1]
