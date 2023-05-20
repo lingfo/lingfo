@@ -85,6 +85,12 @@ def _open_find(file):
                 # pylint: enable=unnecessary-dunder-call
 
                 DATA.append(data)
+                lib_path = config['main']['lib_path'].split('/')[0]
+                file_extension = config['main']['lang']
+                edited_file = file.replace(f'.{file_extension}', '').replace(f'{lib_path}/', '')
+                
+                save(file, edited_file, data)
+
             else:
                 # extract variable
                 split = tree.split("=")
@@ -130,12 +136,11 @@ def find():
 
     # if old_cache != DATA: TODO: Fix
     # if CUSTOM_TEMP_FILE == """""":
-    save()
 
     return DATA
 
 
-def save():
+def save(full_file_name, file_name, data):
     """saves indexed functions to file"""
 
     if not exists("out"):
@@ -143,12 +148,9 @@ def save():
 
 
     # create new file
-    file_data_old = DATA[0]["file"].split("/")[-1]
-    file_data = file_data_old.replace("." + config["main"]["lang"], "")
-
     print_space = " " * 100
 
-    with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
+    with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
         # TODO: cleanup
         try:
             if config.getboolean("index", "dev"):
@@ -164,28 +166,27 @@ def save():
 
         # Write each function to our created file
         # pylint: disable=line-too-long
-        for x in DATA:
-            rich_print(
-                f"[bold yellow]lingfo[/bold yellow]   saving indexed function '{x['name']}' ({x['file']}){print_space}"
+        rich_print(
+            f"[bold yellow]lingfo[/bold yellow]   saving indexed function '{data['name']}' ({data['file']}){print_space}"
+        )
+        # pylint: enable=line-too-long
+
+        fname = data["name"]
+
+        if data["type"] == "function":
+            f.write(
+                f"def {fname}({data['arg']}):\tExecute('{full_file_name}', \
+                    '{data['uuid']}', {data['arg']})\n"
             )
-            # pylint: enable=line-too-long
+        else:
+            variable_name = data["name"].replace(" ", "")
+            variable_data = data["variable_data"]
 
-            fname = x["name"]
-
-            if x["type"] == "function":
-                f.write(
-                    f"def {fname}({x['arg']}):\tExecute('{file_data_old}', \
-                        '{x['uuid']}', {x['arg']})\n"
-                )
-            else:
-                variable_name = x["name"].replace(" ", "")
-                variable_data = x["variable_data"]
-
-                f.write(
-                    f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
-                )
+            f.write(
+                f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
+            )
         f.close()
 
         rich_print(
-            f"[bold green]lingfo[/bold green]   saved indexed functions to out/{file_data}.py{print_space}"
+            f"[bold green]lingfo[/bold green]   saved indexed functions to out/{file_name}.py{print_space}"
         )
