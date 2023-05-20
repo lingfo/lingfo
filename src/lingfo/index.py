@@ -112,8 +112,10 @@ def find():
     """finds functions"""
 
     # remove old files
-    verbose_print('[bold green]lingfo[/bold green]   removing out/')
-    rmtree('out')
+    with suppress(FileNotFoundError):
+        verbose_print('[bold green]lingfo[/bold green]   clearing out/')
+        rmtree('out')
+        os.makedirs('out')
 
     files = config["main"]["lib_path"]
 
