@@ -196,11 +196,6 @@ class Execute:
             import_syntax = lingfocache.TEMPLATE_IMPORT_SYNTAX
         else:
             import_syntax = launch_config["import_syntax"]
-        file_name = main_config["lib_path"].split("/")[-1]
-        if main_config["lib_path"][-1] == "*":
-            # user selected multiple files
-            file_name = main_config["lib_path"].replace("*", file)
-            file_name = file_name.split("/")[-1]
 
         if config.getboolean("main", "use_templates") is True:
             self.temp_file = lingfocache.TEMPLATE_TEMP_FILE
@@ -224,7 +219,9 @@ class Execute:
             if after == "()":
                 self.temp_file = self.temp_file.replace("($LINGFO_ARGS)", "")
 
-        data = TranslateData(import_syntax, file_name, call_function, self.init_args)
+        lib_path_first = config['main']['lib_path'].split('/')[0]
+        new_file = file.replace(f'{lib_path_first}/', '')
+        data = TranslateData(import_syntax, new_file, call_function, self.init_args)
         self.translate(data)
 
         if config.getboolean("launch", "multiple_functions") is True:

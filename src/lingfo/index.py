@@ -158,12 +158,11 @@ def save(full_file_name, file_name, data):
     print_space = " " * 100
 
     # create missing folders
-    file = file_name.split('/')[-1]
-    missing_folders = file_name.replace(file, '')
-
+    # TODO: dont create files as folders
     with suppress(FileExistsError):
         verbose_print('[bold green]lingfo[/bold green]   creating missing folders')
-        os.makedirs(f'out/{missing_folders}')
+
+        os.makedirs(f'out/{file_name}')
 
     with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
         # TODO: cleanup
