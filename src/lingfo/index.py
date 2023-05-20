@@ -7,7 +7,7 @@ import configparser
 import os
 
 from contextlib import suppress
-from os import listdir, mkdir
+from os import mkdir
 from os.path import exists, isfile
 
 from rich import print as rich_print
