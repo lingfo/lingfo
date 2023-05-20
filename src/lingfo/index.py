@@ -6,6 +6,7 @@ Gets all functions from another language using tree-sitter
 import configparser
 import os
 
+from shutil import rmtree
 from contextlib import suppress
 from os import mkdir
 from os.path import exists, isfile
@@ -85,10 +86,10 @@ def _open_find(file):
                 # pylint: enable=unnecessary-dunder-call
 
                 DATA.append(data)
+
                 lib_path = config['main']['lib_path'].split('/')[0]
                 file_extension = config['main']['lang']
                 edited_file = file.replace(f'.{file_extension}', '').replace(f'{lib_path}/', '')
-                
                 save(file, edited_file, data)
 
             else:
@@ -109,6 +110,10 @@ def _open_find(file):
 
 def find():
     """finds functions"""
+
+    # remove old files
+    verbose_print('[bold green]lingfo[/bold green]   removing out/')
+    rmtree('out')
 
     files = config["main"]["lib_path"]
 
@@ -150,6 +155,14 @@ def save(full_file_name, file_name, data):
     # create new file
     print_space = " " * 100
 
+    # create missing folders
+    file = file_name.split('/')[-1]
+    missing_folders = file_name.replace(file, '')
+
+    with suppress(FileExistsError):
+        verbose_print('[bold green]lingfo[/bold green]   creating missing folders')
+        os.makedirs(f'out/{missing_folders}')
+
     with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
         # TODO: cleanup
         try:
@@ -188,5 +201,6 @@ def save(full_file_name, file_name, data):
         f.close()
 
         rich_print(
-            f"[bold green]lingfo[/bold green]   saved indexed functions to out/{file_name}.py{print_space}"
+            f"[bold green]lingfo[/bold green]   saved indexed functions to \
+out/{file_name}.py{print_space}"
         )
