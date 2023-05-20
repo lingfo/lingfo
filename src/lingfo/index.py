@@ -2,9 +2,13 @@
 Gets all functions from another language using tree-sitter
 """
 
+# TODO: clean imports
 import configparser
+import os
+
+from shutil import rmtree
 from contextlib import suppress
-from os import listdir, mkdir, path
+from os import mkdir
 from os.path import exists, isfile
 
 from rich import print as rich_print
@@ -30,6 +34,17 @@ try:
 except NameError:
     CUSTOM_TEMP_FILE = """"""
 
+def open_multiple_files():
+    """open multiple files (including subfolders)"""
+
+    output = []
+    lib_path = config['main']['lib_path'].split('/')[0]
+
+    for path, _subdirs, files in os.walk(lib_path + "/"):
+        for name in files:
+            output.append(os.path.join(path, name))
+
+    return output
 
 def _open_find(file):
     """finds all functions"""
@@ -71,6 +86,12 @@ def _open_find(file):
                 # pylint: enable=unnecessary-dunder-call
 
                 DATA.append(data)
+
+                lib_path = config['main']['lib_path'].split('/')[0]
+                file_extension = config['main']['lang']
+                edited_file = file.replace(f'.{file_extension}', '').replace(f'{lib_path}/', '')
+                save(file, edited_file, data)
+
             else:
                 # extract variable
                 split = tree.split("=")
@@ -90,18 +111,24 @@ def _open_find(file):
 def find():
     """finds functions"""
 
+    # remove old files
+    with suppress(FileNotFoundError):
+        verbose_print('[bold green]lingfo[/bold green]   clearing out/')
+        rmtree('out')
+        os.makedirs('out')
+
     files = config["main"]["lib_path"]
 
     if MULTIPLE_FILES:
         # get all files
-        lib_path = path.relpath(files.replace("*", ""))
-        all_files = listdir(lib_path)
+        files = open_multiple_files()
+        lib_path = config['main']['lib_path'].split('/')[0]
 
         with suppress(ValueError):
-            all_files.remove("out")
+            files.remove(f"{lib_path}/out")
 
-        for x in all_files:
-            _open_find(lib_path + "/" + x)
+        for x in files:
+            _open_find(x)
     else:
         _open_find(files)
 
@@ -116,24 +143,29 @@ def find():
 
     # if old_cache != DATA: TODO: Fix
     # if CUSTOM_TEMP_FILE == """""":
-    save()
 
     return DATA
 
 
-def save():
+def save(full_file_name, file_name, data):
     """saves indexed functions to file"""
 
     if not exists("out"):
         mkdir("out")
 
-    # create new file
-    file_data_old = DATA[0]["file"].split("/")[-1]
-    file_data = file_data_old.replace("." + config["main"]["lang"], "")
 
+    # create new file
     print_space = " " * 100
 
-    with open(file=f"out/{file_data}.py", mode="w", encoding="UTF-8") as f:
+    # create missing folders
+    file = file_name.split('/')[-1]
+    missing_folders = file_name.replace(file, '')
+
+    with suppress(FileExistsError):
+        verbose_print('[bold green]lingfo[/bold green]   creating missing folders')
+        os.makedirs(f'out/{missing_folders}')
+
+    with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
         # TODO: cleanup
         try:
             if config.getboolean("index", "dev"):
@@ -149,28 +181,28 @@ def save():
 
         # Write each function to our created file
         # pylint: disable=line-too-long
-        for x in DATA:
-            rich_print(
-                f"[bold yellow]lingfo[/bold yellow]   saving indexed function '{x['name']}' ({x['file']}){print_space}"
+        rich_print(
+            f"[bold yellow]lingfo[/bold yellow]   saving indexed function '{data['name']}' ({data['file']}){print_space}"
+        )
+        # pylint: enable=line-too-long
+
+        fname = data["name"]
+
+        if data["type"] == "function":
+            f.write(
+                f"def {fname}({data['arg']}):\tExecute('{full_file_name}', \
+                    '{data['uuid']}', {data['arg']})\n"
             )
-            # pylint: enable=line-too-long
+        else:
+            variable_name = data["name"].replace(" ", "")
+            variable_data = data["variable_data"]
 
-            fname = x["name"]
-
-            if x["type"] == "function":
-                f.write(
-                    f"def {fname}({x['arg']}):\tExecute('{file_data_old}', \
-                        '{x['uuid']}', {x['arg']})\n"
-                )
-            else:
-                variable_name = x["name"].replace(" ", "")
-                variable_data = x["variable_data"]
-
-                f.write(
-                    f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
-                )
+            f.write(
+                f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
+            )
         f.close()
 
         rich_print(
-            f"[bold green]lingfo[/bold green]   saved indexed functions to out/{file_data}.py{print_space}"
+            f"[bold green]lingfo[/bold green]   saved indexed functions to \
+out/{file_name}.py{print_space}"
         )
