@@ -14,7 +14,6 @@ from rich import print as rich_print
 
 from .cache.main import Cache
 from .config import extends
-from .git import GitTracking
 from .index import find
 from .utils.verbose_print import verbose_print
 
@@ -117,7 +116,6 @@ class Lingfo:
             Cache,
             self._check_config,
             self._extend_check,
-            GitTracking,
         ]
         for f in functions:
             f()
