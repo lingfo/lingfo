@@ -65,6 +65,11 @@ def _open_find(file):
             tree = data_x.decode("utf-8")
 
             if x["type"] == "function":
+                file_split = file.split('.')
+                if file_split[-1] != config['main']['lang']:
+                    verbose_print('[bold red]lingfo[/bold red]   wrong file extension, skipping.')
+                    return
+                
                 function_name = tree.split("(")[0]
 
                 function_args = tree.split("(")[1].replace(")", "")
