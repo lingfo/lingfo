@@ -8,6 +8,8 @@ import os
 
 from shutil import rmtree
 from contextlib import suppress
+from pathlib import Path
+
 from os import mkdir
 from os.path import exists, isfile
 
@@ -161,7 +163,6 @@ def save(full_file_name, file_name, data):
     # TODO: dont create files as folders
     with suppress(FileExistsError):
         verbose_print('[bold green]lingfo[/bold green]   creating missing folders')
-
         os.makedirs(f'out/{file_name}')
 
     with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
@@ -205,3 +206,12 @@ def save(full_file_name, file_name, data):
             f"[bold green]lingfo[/bold green]   saved indexed functions to \
 out/{file_name}.py{print_space}"
         )
+
+
+    verbose_print('[bold green]lingfo[/bold green]   removing empty directories in out/')
+
+    # remove empty directories that were probably created by accident
+    for root, directories, _ in os.walk("out", topdown=False):
+        for x in directories:
+            with suppress(OSError):
+                os.rmdir(Path(root, x))
