@@ -66,6 +66,7 @@ class TSDetect:
         Repo.clone_from(
             f"https://github.com/tree-sitter/tree-sitter-{language}",
             file_path + "source/",
+            depth=1
         )
 
         # and build library for tree-sitter
