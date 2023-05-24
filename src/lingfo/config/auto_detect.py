@@ -22,33 +22,6 @@ config = configparser.ConfigParser()
 config.read("lingfo.conf")
 
 
-class EditVariable:
-    """edit variable"""
-
-    def extract_arg(self):
-        """extract get argument stuff that is used for
-        if statements one time compile"""
-
-        # get if statement
-        if config.getboolean("main", "use_templates") is True:
-            if_statement = lingfocache.TEMPLATE_IF_STATEMENT
-        else:
-            if_statement = config["launch"]["if_statement"]
-        if_statement = if_statement.split("$LINGFO_ARG_NUM")
-
-        # remove text from if statement so we will get only argument call
-        first = if_statement[0].replace("if", "")
-        second = if_statement[1].split("==")[0]
-
-        if "(" in first:
-            first = first.replace("(", "")
-
-        # connect two parts TODO: is every language using array for that?
-        if_statement = first + str(0) + second
-
-        return if_statement
-
-
 class TSDetect:
     """detect using TreeSitter"""
 
@@ -126,5 +99,4 @@ class TSDetect:
                 elif node.type == "declaration" and "=" in str(extract.text):
                     output.append({"type": "variable", "data": extract.text})
 
-                    # edit_variable = EditVariable()
         return output
