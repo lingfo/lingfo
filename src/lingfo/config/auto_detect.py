@@ -93,6 +93,10 @@ class TSDetect:
                 )
                 lines = int(lines)
 
+                if node.type == 'class_specifier':
+                    for x in node.children:
+                        print(x.text)
+                        
                 # grab all functions and variables
                 if node.type == "function_definition":
                     output.append({"type": "function", "data": extract.text})
