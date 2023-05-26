@@ -135,6 +135,7 @@ this is turned off in settings! Please turn it back on in lingfo.conf before con
     def __exit__(self, *args_function):
         self.launch()
 
+
 class Execute:
     """executes function"""
 
@@ -153,7 +154,6 @@ class Execute:
                 args = ""
         else:
             args = ""
-
 
         translate_data_temp = {
             "$LINGFO_ARGS": args,
@@ -219,8 +219,8 @@ class Execute:
             if after == "()":
                 self.temp_file = self.temp_file.replace("($LINGFO_ARGS)", "")
 
-        lib_path_first = config['main']['lib_path'].split('/')[0]
-        new_file = file.replace(f'{lib_path_first}/', '')
+        lib_path_first = config["main"]["lib_path"].split("/")[0]
+        new_file = file.replace(f"{lib_path_first}/", "")
         data = TranslateData(import_syntax, new_file, call_function, self.init_args)
         self.translate(data)
 

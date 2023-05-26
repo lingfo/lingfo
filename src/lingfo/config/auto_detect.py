@@ -39,7 +39,7 @@ class TSDetect:
         Repo.clone_from(
             f"https://github.com/tree-sitter/tree-sitter-{language}",
             file_path + "source/",
-            depth=1
+            depth=1,
         )
 
         # and build library for tree-sitter
@@ -51,7 +51,10 @@ class TSDetect:
             Cache, "TREE_SITTER_CONFIGURED = False", "TREE_SITTER_CONFIGURED = True"
         )
 
-    def __init__(self, language: str, content: str) -> None:
+    def __init__(self, language: str, content: str, relaunch: bool = False) -> None:
+        self.language = language
+        self.relaunch = relaunch
+
         file_path = f".lingfo/tree-sitter-{language}/"
 
         try:
@@ -82,6 +85,12 @@ class TSDetect:
         tree = self.tree
         output = []
 
+        def save(data):
+            if self.relaunch is False:
+                output.append(data)
+                return
+            output.append(data | {"from": "class"})
+
         for node in tree.root_node.children:
             with suppress(IndexError):
                 extract = node.children[1]
@@ -93,14 +102,27 @@ class TSDetect:
                 )
                 lines = int(lines)
 
-                if node.type == 'class_specifier':
-                    for x in node.children:
-                        print(x.text)
-                        
+                if node.type == "class_specifier" and self.relaunch is False:
+                    class_content = node.children[2].text
+
+                    # remove unnecessary characters
+                    class_content = class_content.decode()
+
+                    # for C/C++ and other languages that use similar class structure
+                    class_content = class_content.replace("public:", "").replace(
+                        "private:", ""
+                    )
+                    class_content = class_content.split("\n", 1)[
+                        1
+                    ]  # remove first line from string
+
+                    # relaunch to parse content inside class
+                    TSDetect(self.language, class_content, True)
+
                 # grab all functions and variables
                 if node.type == "function_definition":
-                    output.append({"type": "function", "data": extract.text})
+                    save({"type": "function", "data": extract.text, "from": "file"})
                 elif node.type == "declaration" and "=" in str(extract.text):
-                    output.append({"type": "variable", "data": extract.text})
+                    save({"type": "variable", "data": extract.text, "from": "file"})
 
         return output
