@@ -189,7 +189,7 @@ def save(full_file_name, file_name, data):
 
     class_content_spaces = "\t\t\t"
 
-    def save_class(already_saved: bool):
+    def save_class():
         class_name = data["class_name"]
         return f'class {class_name}():\n\
 \t\tdef __init__(self):\n\
@@ -201,7 +201,7 @@ def save(full_file_name, file_name, data):
 
     def save_function(in_class: bool = False):
         spaces = class_content_spaces if in_class else ""
-        print(data)
+
         return f"{spaces}def {fname}({data['arg']}):\tExecute('{full_file_name}', \
                         '{data['uuid']}', {data['arg']})\n"
 
@@ -256,7 +256,7 @@ def save(full_file_name, file_name, data):
         if data["from"] == "class":
             if not data["class_name"] in saved_classes:
                 saved_classes.append(data["class_name"])
-                f.write(save_class(True))
+                f.write(save_class())
 
             if data["type"] == "function":
                 f.write(save_function(True))
