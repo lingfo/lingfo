@@ -200,9 +200,11 @@ def save(full_file_name, file_name, data):
 
     def save_function(in_class: bool = False):
         spaces = "\t\t" if in_class else ""
+        class_name = data["class_name"] if in_class else ""
         use_self = "self," if in_class else ""
+
         return f"{spaces}def {fname}({use_self}{data['arg']}):\tExecute('{full_file_name}', \
-                        '{data['uuid']}', {data['arg']})\n"
+                        '{data['uuid']}', {in_class}, '{class_name}', {data['arg']})\n"
 
     # create new file
     print_space = " " * 100

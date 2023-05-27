@@ -11,6 +11,9 @@ import shlex
 import subprocess
 import sys
 
+from random import choices
+from string import ascii_lowercase
+
 from dataclasses import dataclass
 from os import remove
 from os.path import isfile
@@ -42,6 +45,7 @@ class TranslateData:
     file_name: str
     call_function: str
     args: str
+    is_class: bool
 
 
 class MultipleExecute:
@@ -91,7 +95,7 @@ this is turned off in settings! Please turn it back on in lingfo.conf before con
         file = self._open_file()
         lines = file.readlines()
 
-        execute = Execute(None, None, None, use_multiple_execute=True)
+        execute = Execute(None, None, None, use_multiple_execute=True, class_name="")
 
         # get import syntax from config (TODO: its already defined somewhere else)
         if config.getboolean("main", "use_templates") is True:
@@ -120,7 +124,7 @@ this is turned off in settings! Please turn it back on in lingfo.conf before con
         file.close()
 
         # translate it
-        data = TranslateData(import_syntax, file_split, functions, args)
+        data = TranslateData(import_syntax, file_split, functions, args, is_class=False)
         output = execute.translate(
             data,
             temp_file,
@@ -159,23 +163,55 @@ class Execute:
             "$LINGFO_ARGS": args,
         }
 
+        translate_utils = {
+            "$LINGFO_SEMICOLON": ";",
+            "$LINGFO_FUNCTION": data.call_function,
+        }
+
+        class_call_translate = {}
+
+        if data.is_class:
+            # prepare translate data
+            class_call_translate = {
+                "$LINGFO_RANDOM": "".join(choices(ascii_lowercase, k=3)),
+                "$LINGFO_CLASS": self.class_name,
+            }
+
+            class_call_translate = {**class_call_translate, **translate_utils}
+
         translate_data = {
             "$LINGFO_IMPORT": data.import_syntax.replace("[file-name]", data.file_name),
-            "$LINGFO_FUNCTION": data.call_function,
-            "$LINGFO_SEMICOLON": ";",
             "$LINGFO_NEWLINE": "\n",
             "$LINGFO_ARGS": "",
         }
+
+        translate_data = {**translate_data, **translate_utils}
+
+        if data.is_class:
+            # translate it
+            translate_data = {**class_call_translate, **translate_data}
+            function_class = config["launch"]["class_call_syntax"]
+
+            for i, j in {**translate_data, **translate_data_temp}.items():
+                function_class = function_class.replace(i, j)
+
+            # and then combine translate data and output of this translate process
+            new_translate_data = {"$LINGFO_FUNCTION": function_class}
+            translate_data = {**translate_data, **new_translate_data}
 
         for i, j in {**translate_data, **translate_data_temp}.items():
             self.temp_file = self.temp_file.replace(i, j)
 
         return self.temp_file
 
-    def __init__(self, file, uuid, *args, use_multiple_execute=False) -> None:
+    def __init__(
+        self, file, uuid, is_class, class_name, *args, use_multiple_execute=False
+    ) -> None:
         self.temp_file = ""
         self.init_args = INIT_ARGS
         self.temp_file = TEMP_FILE
+        self.is_class = is_class
+        self.class_name = class_name
 
         if use_multiple_execute is True:
             return
@@ -221,7 +257,9 @@ class Execute:
 
         lib_path_first = config["main"]["lib_path"].split("/")[0]
         new_file = file.replace(f"{lib_path_first}/", "")
-        data = TranslateData(import_syntax, new_file, call_function, self.init_args)
+        data = TranslateData(
+            import_syntax, new_file, call_function, self.init_args, self.is_class
+        )
         self.translate(data)
 
         if config.getboolean("launch", "multiple_functions") is True:
