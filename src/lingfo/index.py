@@ -62,7 +62,7 @@ def _open_find(file):
             lines,
         )
 
-        for x in detect.parse_tree():
+        for x in detect.parse_tree()[0]:
             data_x = x["data"]
             tree = data_x.decode("utf-8")
 

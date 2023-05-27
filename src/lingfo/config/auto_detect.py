@@ -84,12 +84,13 @@ class TSDetect:
 
         tree = self.tree
         output = []
+        self.new_output = []  # output used for class content parsing
 
         def save(data):
             if self.relaunch is False:
-                output.append(data)
-                return
-            output.append(data | {"from": "class"})
+                output.append(data | {"from": "file"})
+            else:
+                output.append(data | {"from": "class"})
 
         for node in tree.root_node.children:
             with suppress(IndexError):
@@ -101,6 +102,12 @@ class TSDetect:
                     lines.replace("(", "").replace(")", "").split(",", maxsplit=1)[0]
                 )
                 lines = int(lines)
+
+                # grab all functions and variables
+                if node.type == "function_definition":
+                    save({"type": "function", "data": extract.text})
+                elif node.type == "declaration" and "=" in str(extract.text):
+                    save({"type": "variable", "data": extract.text})
 
                 if node.type == "class_specifier" and self.relaunch is False:
                     class_content = node.children[2].text
@@ -117,12 +124,10 @@ class TSDetect:
                     ]  # remove first line from string
 
                     # relaunch to parse content inside class
-                    TSDetect(self.language, class_content, True)
+                    new_detect = TSDetect(self.language, class_content, True)
+                    self.new_output = new_detect.parse_tree()
 
-                # grab all functions and variables
-                if node.type == "function_definition":
-                    save({"type": "function", "data": extract.text, "from": "file"})
-                elif node.type == "declaration" and "=" in str(extract.text):
-                    save({"type": "variable", "data": extract.text, "from": "file"})
-
-        return output
+        if len(self.new_output) == 0:
+            # class wasnt found, so there isnt any new_output
+            return output
+        return [output, *self.new_output]
