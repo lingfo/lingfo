@@ -62,7 +62,19 @@ def _open_find(file):
             lines,
         )
 
-        for x in detect.parse_tree()[0]:
+        parse_tree = detect.parse_tree()
+        tree_data = []
+
+        # remove multiple arrays in output
+        for x in parse_tree:
+            if isinstance(x, list):
+                # TODO: try to omit nested for loops
+                for y in x:
+                    tree_data.append(y)
+            else:
+                tree_data.append(x)
+
+        for x in tree_data:
             data_x = x["data"]
             tree = data_x.decode("utf-8")
 
@@ -85,7 +97,15 @@ def _open_find(file):
                     "arg": function_args,
                     "file": file,
                     "type": "function",
+                    "from": x["from"],
                 }
+
+                try:
+                    class_name_data = {"class_name": x["class_name"]}
+                except KeyError:
+                    class_name_data = {"class_name": ""}
+
+                data = {**data, **class_name_data}
 
                 # pylint: disable=unnecessary-dunder-call
                 if ONE_COMPILE and lingfocache.INDEXED_FUNCTIONS is not None:
@@ -104,7 +124,6 @@ def _open_find(file):
                     f"{lib_path}/", ""
                 )
                 save(file, edited_file, data)
-
             else:
                 # extract variable
                 split = tree.split("=")
@@ -117,6 +136,8 @@ def _open_find(file):
                         "name": name,
                         "variable_data": variable_data,
                         "file": file,
+                        "from": x["from"],
+                        "class_name": x["class_name"],
                     }
                 )
 
@@ -160,11 +181,29 @@ def find():
     return DATA
 
 
+saved_classes = []
+
+
 def save(full_file_name, file_name, data):
     """saves indexed functions to file"""
 
+    class_content_spaces = "\t\t\t"
+
+    def save_class(already_saved: bool):
+        class_name = data["class_name"]
+        return f'class {class_name}():\n\
+\t\tdef __init__(self):\n\
+{class_content_spaces}"""Lingfo class"""\n\
+{class_content_spaces}pass\n'
+
     if not exists("out"):
         mkdir("out")
+
+    def save_function(in_class: bool = False):
+        spaces = class_content_spaces if in_class else ""
+        print(data)
+        return f"{spaces}def {fname}({data['arg']}):\tExecute('{full_file_name}', \
+                        '{data['uuid']}', {data['arg']})\n"
 
     # create new file
     print_space = " " * 100
@@ -175,19 +214,23 @@ def save(full_file_name, file_name, data):
         verbose_print("[bold green]lingfo[/bold green]   creating missing folders")
         os.makedirs(f"out/{file_name}")
 
-    with open(file=f"out/{file_name}.py", mode="a", encoding="UTF-8") as f:
+    with open(file=f"out/{file_name}.py", mode="a+", encoding="UTF-8") as f:
+        f_temp = f
+        f_temp.seek(0)
+
         # TODO: cleanup
-        try:
-            if config.getboolean("index", "dev"):
-                f.write("from src.lingfo.execute import Execute\n")
-                f.write("from src.lingfo.utils.variables import LingfoVariable\n")
-            else:
+        if len(f_temp.readlines()) == 0:
+            try:
+                if config.getboolean("index", "dev"):
+                    f.write("from src.lingfo.execute import Execute\n")
+                    f.write("from src.lingfo.utils.variables import LingfoVariable\n")
+                else:
+                    f.write("from lingfo.execute import Execute\n")
+                    f.write("from lingfo.utils.variables import LingfoVariable\n")
+
+            except configparser.NoOptionError:
                 f.write("from lingfo.execute import Execute\n")
                 f.write("from lingfo.utils.variables import LingfoVariable\n")
-
-        except configparser.NoOptionError:
-            f.write("from lingfo.execute import Execute\n")
-            f.write("from lingfo.utils.variables import LingfoVariable\n")
 
         # Write each function to our created file
         # pylint: disable=line-too-long
@@ -198,18 +241,25 @@ def save(full_file_name, file_name, data):
 
         fname = data["name"]
 
-        if data["type"] == "function":
-            f.write(
-                f"def {fname}({data['arg']}):\tExecute('{full_file_name}', \
-                    '{data['uuid']}', {data['arg']})\n"
-            )
-        else:
-            variable_name = data["name"].replace(" ", "")
-            variable_data = data["variable_data"]
+        if data["from"] == "file":
+            if data["type"] == "function":
+                f.write(save_function())
+            elif data["type"] == "variable":
+                variable_name = data["name"].replace(" ", "")
+                variable_data = data["variable_data"]
 
-            f.write(
-                f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
-            )
+                f.write(
+                    f"{variable_name} = LingfoVariable('{variable_name}', {variable_data})\n"
+                )
+
+        # save class
+        if data["from"] == "class":
+            if not data["class_name"] in saved_classes:
+                saved_classes.append(data["class_name"])
+                f.write(save_class(True))
+
+            if data["type"] == "function":
+                f.write(save_function(True))
         f.close()
 
         rich_print(

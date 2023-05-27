@@ -51,9 +51,12 @@ class TSDetect:
             Cache, "TREE_SITTER_CONFIGURED = False", "TREE_SITTER_CONFIGURED = True"
         )
 
-    def __init__(self, language: str, content: str, relaunch: bool = False) -> None:
+    def __init__(
+        self, language: str, content: str, relaunch: bool = False, class_name: str = ""
+    ) -> None:
         self.language = language
         self.relaunch = relaunch
+        self.class_name = class_name
 
         file_path = f".lingfo/tree-sitter-{language}/"
 
@@ -90,7 +93,7 @@ class TSDetect:
             if self.relaunch is False:
                 output.append(data | {"from": "file"})
             else:
-                output.append(data | {"from": "class"})
+                output.append(data | {"from": "class", "class_name": self.class_name})
 
         for node in tree.root_node.children:
             with suppress(IndexError):
@@ -111,6 +114,7 @@ class TSDetect:
 
                 if node.type == "class_specifier" and self.relaunch is False:
                     class_content = node.children[2].text
+                    self.class_name = extract.text.decode()
 
                     # remove unnecessary characters
                     class_content = class_content.decode()
@@ -124,7 +128,9 @@ class TSDetect:
                     ]  # remove first line from string
 
                     # relaunch to parse content inside class
-                    new_detect = TSDetect(self.language, class_content, True)
+                    new_detect = TSDetect(
+                        self.language, class_content, True, self.class_name
+                    )
                     self.new_output = new_detect.parse_tree()
 
         if len(self.new_output) == 0:
