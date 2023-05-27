@@ -187,22 +187,21 @@ saved_classes = []
 def save(full_file_name, file_name, data):
     """saves indexed functions to file"""
 
-    class_content_spaces = "\t\t\t"
-
     def save_class():
         class_name = data["class_name"]
+        class_spaces = "\t\t\t"
         return f'class {class_name}():\n\
 \t\tdef __init__(self):\n\
-{class_content_spaces}"""Lingfo class"""\n\
-{class_content_spaces}pass\n'
+{class_spaces}"""Lingfo class"""\n\
+{class_spaces}pass\n'
 
     if not exists("out"):
         mkdir("out")
 
     def save_function(in_class: bool = False):
-        spaces = class_content_spaces if in_class else ""
-
-        return f"{spaces}def {fname}({data['arg']}):\tExecute('{full_file_name}', \
+        spaces = "\t\t" if in_class else ""
+        use_self = "self," if in_class else ""
+        return f"{spaces}def {fname}({use_self}{data['arg']}):\tExecute('{full_file_name}', \
                         '{data['uuid']}', {data['arg']})\n"
 
     # create new file
