@@ -130,6 +130,11 @@ def _open_find(file):
                 name = split[0]
                 variable_data = split[1]
 
+                try:
+                    x["class_name"]
+                except KeyError:
+                    x["class_name"] = ""
+
                 DATA.append(
                     {
                         "type": "variable",
