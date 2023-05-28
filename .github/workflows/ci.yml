@@ -22,9 +22,17 @@ jobs:
             - name: Check the code using pylint
               run: |
                   pylint $(git ls-files '*.py')
-
+    
+    pip-audit:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run audit
+            - uses: pypa/gh-action-pip-audit@v1.0.0
+              with:
+                  inputs: requirements.txt
+          
     test:
-        needs: lint
+        needs: [lint, pip-audit]
         if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
         strategy:
             matrix:
