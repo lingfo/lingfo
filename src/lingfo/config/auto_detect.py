@@ -131,8 +131,7 @@ class TSDetect:
                     new_detect = TSDetect(
                         self.language, class_content, True, self.class_name
                     )
-                    self.new_output = new_detect.parse_tree()
-
+                    self.new_output += new_detect.parse_tree()
         if len(self.new_output) == 0:
             # class wasnt found, so there isnt any new_output
             return output
