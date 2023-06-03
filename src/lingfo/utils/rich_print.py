@@ -8,10 +8,12 @@ config.read("lingfo.conf")
 
 
 def rich_print(content: str):
+    """wrapper around print from rich library"""
+
     # off by default
 
     try:
-        if config.getboolean("main", "quiet_mode") == False:
+        if config.getboolean("main", "quiet_mode") is False:
             rprint(content)
     except configparser.NoOptionError:
         rprint(content)

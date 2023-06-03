@@ -8,8 +8,8 @@ import os
 from os.path import isfile
 
 from git import Repo
-from ..utils.rich_print import rich_print
 from tree_sitter import Language, Parser
+from ..utils.rich_print import rich_print
 
 from ..cache.main import Cache
 
