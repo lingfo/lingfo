@@ -13,7 +13,7 @@ from pathlib import Path
 from os import mkdir
 from os.path import exists, isfile
 
-from rich import print as rich_print
+from .utils.rich_print import rich_print
 
 from .cache.main import Cache
 from .config.auto_detect import TSDetect

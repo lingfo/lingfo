@@ -5,7 +5,7 @@ import uuid
 from contextlib import suppress
 from os.path import isfile
 
-from rich import print as rich_print
+from .utils.rich_print import rich_print
 
 from .cache.main import Cache
 

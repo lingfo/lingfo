@@ -17,7 +17,7 @@ from string import ascii_lowercase
 from dataclasses import dataclass
 from os import remove
 from os.path import isfile
-from rich import print as rich_print
+from .utils.rich_print import rich_print
 
 from .cache.main import Cache
 from .stores import ONE_COMPILE

@@ -11,7 +11,7 @@ from pathlib import Path
 from shutil import rmtree
 
 from git import Repo
-from rich import print as rich_print
+from ..utils.rich_print import rich_print
 
 # pylint: disable=import-error, too-few-public-methods
 from ..cache.main import Cache
