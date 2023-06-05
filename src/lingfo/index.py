@@ -215,7 +215,6 @@ def save(full_file_name, file_name, data):
     print_space = " " * 100
 
     # create missing folders
-    # TODO: dont create files as folders
     with suppress(FileExistsError):
         verbose_print("[bold green]lingfo[/bold green]   creating missing folders")
         os.makedirs(f"out/{file_name}")
